@@ -78,3 +78,15 @@ Context "Should BeNullorEmpty test"{
  
  
 }
+$TestDrive
+Describe "Add-Footer" {
+    $testPath = "TestDrive:\test.txt"
+    Set-Content $testPath -value "my test text."
+    Add-Footer $testPath "-Footer"
+    $TestDrive
+    $result = Get-Content $testPath
+
+    It "adds a footer" {
+        (-join $result) | Should Be "my test text.-Footer"
+    }
+}
