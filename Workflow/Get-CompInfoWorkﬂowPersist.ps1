@@ -4,3 +4,5 @@
     Get-Disk
     Get-service -PSPersist $true
 }
+
+Get-CompInfo

@@ -16,3 +16,4 @@ $myComputers = '12R207','12R208'
 # if Get-WmiObject, pscomputername = localhost
 Get-CompInfoByWorkflowParallel -Computers $myComputers -PSPersist $true | select pscomputername,caption,domain |ft -AutoSize
 Get-CompInfoByWorkflowParallel -Computers $myComputers | select pscomputername,caption,domain |ft -AutoSize
+
