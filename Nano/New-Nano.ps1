@@ -167,4 +167,5 @@ netsh advfirewall set allprofiles state off
 
 
 # install docker manually
-# https://msdn.microsoft.com/fr-fr/virtualization/windowscontainers/docker/configure_docker_daemon?f=255&MSPPError=-2147217396
+# https://msdn.microsoft.com/en-us/virtualization/windowscontainers/docker/configure_docker_daemon?f=255&MSPPError=-2147217396
+# https://github.com/docker/labs/blob/master/windows/windows-containers/Setup-Server2016.md
