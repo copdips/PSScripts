@@ -161,3 +161,10 @@ docker run microsoft/windowsservercore hostname
 
 # nano on ESXi
 # http://www.v-front.de/2016/07/how-to-deploy-windows-nano-server-tp5.html
+
+# Disbale firewall
+netsh advfirewall set allprofiles state off
+
+
+# install docker manually
+# https://msdn.microsoft.com/fr-fr/virtualization/windowscontainers/docker/configure_docker_daemon?f=255&MSPPError=-2147217396
