@@ -28,6 +28,11 @@ New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($ima
 # New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -ComputerName 16NANO02 -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -DomainName contoso.com
 New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -DomainBlobPath D:\xiang\Hyper-V\16NANO02\16NANO02.djoin
 
+# add KB and vmware driver too.
+# https://blogs.technet.microsoft.com/nanoserver/2016/10/07/updating-nano-server/
+# http://www.v-front.de/2016/07/how-to-deploy-windows-nano-server-tp5.html
+
+
 New-VM -Name 16NANO02 -MemoryStartupBytes 2048MB -SwitchName 'External VM Switch' -VHDPath 'D:\xiang\Hyper-V\16NANO02\16NANO02.vhd' -Path 'D:\xiang\Hyper-V\16NANO02\' -Generation 1
 
 Start-VM -Name 16NANO02
@@ -146,3 +151,7 @@ docker run microsoft/windowsservercore hostname
 
 # To change the timezone
 # tzutil
+
+
+# nano on ESXi
+# http://www.v-front.de/2016/07/how-to-deploy-windows-nano-server-tp5.html
