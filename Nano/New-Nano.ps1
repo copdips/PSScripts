@@ -20,6 +20,11 @@ $pass = Read-Host "Enter Password" -AsSecureString
 
 $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList Administrator, $pass
 
+
+# Ensure you have the lastest version of DSIM
+# To service this Windows image requires the latest version of the DISM. See http://go.microsoft.com/fwlink/?LinkId=293395 to find the latest version of DISM, 
+# and http://go.microsoft.com/fwlink/?LinkId=293394 to learn how to install the latest version of DISM from the ADK on your computer.
+
 # Workgroup
 New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -ComputerName 16NANO02 -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort
 
