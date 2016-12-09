@@ -142,6 +142,7 @@ expand C:\temp\kb3176936.msu -F:* C:\temp\kb3176936
 # https://stefanscherer.github.io/run-linux-and-windows-containers-on-windows-10/
 # https://blog.docker.com/2016/09/build-your-first-docker-windows-server-container/
 # https://msdn.microsoft.com/en-us/virtualization/windowscontainers/quick_start/quick_start
+# https://docs.docker.com/docker-for-windows/
 
 docker run microsoft/dotnet-samples:dotnetapp-nanoserver
 
