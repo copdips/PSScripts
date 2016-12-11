@@ -26,12 +26,12 @@ $cred = New-Object -TypeName System.Management.Automation.PSCredential -Argument
 # and http://go.microsoft.com/fwlink/?LinkId=293394 to learn how to install the latest version of DISM from the ADK on your computer.
 
 # Workgroup
-New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -ComputerName 16NANO02 -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort
+New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -ComputerName 16NANO02 -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -SetupCompleteCommands @("tzutil.exe /s ""Romance Standard Time""")
 
 # Domain offline join (djoin), you shoud better run this command from a computer that is already in the domain, otherwise you need to in advance harvest the blob from another computer in domain
 # https://technet.microsoft.com/en-us/windows-server-docs/get-started/deploy-nano-server#joining-domains
 # New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -ComputerName 16NANO02 -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -DomainName contoso.com
-New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -DomainBlobPath D:\xiang\Hyper-V\16NANO02\16NANO02.djoin
+New-NanoServerImage -Edition Datacenter -DeploymentType Guest -MediaPath "$($imageDriveLetter):" -BasePath D:\xiang\Hyper-V\16NANO02\Base -TargetPath D:\xiang\Hyper-V\16NANO02\16NANO02.vhd -AdministratorPassword $pass -Ipv4Address 192.168.111.162 -Ipv4SubnetMask 255.255.255.0 -Ipv4Gateway 192.168.111.1 -Ipv4Dns 192.168.111.201 -InterfaceNameOrIndex Ethernet -EnableRemoteManagementPort -DomainBlobPath D:\xiang\Hyper-V\16NANO02\16NANO02.djoin -SetupCompleteCommands @("tzutil.exe /s ""Romance Standard Time""")
 
 # add KB and vmware driver too.
 # https://blogs.technet.microsoft.com/nanoserver/2016/10/07/updating-nano-server/
@@ -143,11 +143,35 @@ Restart-Computer -Force ; exit
 # http://catalog.update.microsoft.com/v7/site/Search.aspx?q=KB3176936
 expand C:\temp\kb3176936.msu -F:* C:\temp\kb3176936
 
+# Install kb3176936 on 2016 core & desktop :
+# https://github.com/Microsoft/Virtualization-Documentation/pull/390/files
+# Online update : Run sconfig, then choose option 6 and then A and A to install all updates.
+# Offiline update : http://www.catalog.update.microsoft.com/Search.aspx?q=KB3176936
 
 # https://stefanscherer.github.io/run-linux-and-windows-containers-on-windows-10/
 # https://blog.docker.com/2016/09/build-your-first-docker-windows-server-container/
 # https://msdn.microsoft.com/en-us/virtualization/windowscontainers/quick_start/quick_start
 # https://docs.docker.com/docker-for-windows/
+
+# https://msdn.microsoft.com/en-us/virtualization/windowscontainers/quick_start/quick_start_windows_10
+Invoke-WebRequest "https://test.docker.com/builds/Windows/x86_64/docker-1.13.0-rc2.zip" -OutFile "$env:TEMP\docker-1.13.0-rc2.zip" -UseBasicParsing
+Expand-Archive -Path "$env:TEMP\docker-1.13.0-rc2.zip" -DestinationPath $env:ProgramFiles
+# For quick use, does not require shell to be restarted.
+$env:path += ";c:\program files\docker"
+# For persistent use, will apply even after a reboot.
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files\Docker", [EnvironmentVariableTarget]::Machine)
+or:
+Set-ItemProperty -Path ¡®HKLM:\System\CurrentControlSet\Control\Session Manager\Environment¡¯ -Name PATH ¨CValue $($env:Path + ";C:\Program Files\Docker")
+
+dockerd --register-service
+Start-Service Docker
+
+docker pull microsoft/nanoserver
+docker images
+docker run -it microsoft/nanoserver cmd
+powershell.exe Add-Content C:\helloworld.ps1 'Write-Host "Hello World"'
+exit
+docker ps -a
 
 docker run microsoft/dotnet-samples:dotnetapp-nanoserver
 
@@ -169,3 +193,26 @@ netsh advfirewall set allprofiles state off
 # install docker manually
 # https://msdn.microsoft.com/en-us/virtualization/windowscontainers/docker/configure_docker_daemon?f=255&MSPPError=-2147217396
 # https://github.com/docker/labs/blob/master/windows/windows-containers/Setup-Server2016.md
+
+
+Get-FileHash $imagePath
+
+
+$credContoso = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList Contoso\Xiang, (ConvertTo-SecureString -String "Password1" -AsPlainText) -Force)
+
+Enter-PSSession 192.168.111.161 -Credential $credContoso
+
+# Keyboard
+# Doesn't work as need International PsModule : Set-WinUserLanguageList -LanguageList fr-fr
+# Nano with unattendfile : https://social.technet.microsoft.com/Forums/en-US/d3554b6d-5539-40da-bd1a-c728e30e0158/changing-regional-settings-on-nano-server?forum=NanoServer
+
+# Get event log 
+# Nano doesn't have Get-EventLog, but have Get-WiEvent and Win32_NTLogEvent
+Get-CimInstance Win32_NTLogEvent -Filter 'LogFile="System" and Type="Error"' | Select-Object EventCode,InsertionStrings,Message,RecordNumber,SourceName,TimeGenerated,TimeWritten,Type,User | Export-Csv -NoTypeInformation -NoClobber -Path C:\SystemEventErrors.csv 
+
+# Expand Disk, C:\ for example
+# Run as Administrator elevated
+$MaxSize = (Get-PartitionSupportedSize -DriveLetter c).sizeMax
+Resize-Partition -DriveLetter c -Size $MaxSize
+#By Diskpart
+"rescan","select volume 2","extend" | diskpart
