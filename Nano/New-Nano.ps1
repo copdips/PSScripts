@@ -161,7 +161,7 @@ $env:path += ";c:\program files\docker"
 # For persistent use, will apply even after a reboot.
 [Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files\Docker", [EnvironmentVariableTarget]::Machine)
 or:
-Set-ItemProperty -Path ¡®HKLM:\System\CurrentControlSet\Control\Session Manager\Environment¡¯ -Name PATH ¨CValue $($env:Path + ";C:\Program Files\Docker")
+Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Environment" -Name PATH ï¿½CValue $($env:Path + ";C:\Program Files\Docker")
 
 dockerd --register-service
 Start-Service Docker
