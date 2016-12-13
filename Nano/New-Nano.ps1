@@ -194,7 +194,13 @@ Type = NT5DS
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\w32time\Parameters" -Name Type -Value "NT5DS"
 
 
+# WinRM kerberos token
+gp "HKLM:\SYSTEM\CurrentControlSet\services\HTTP\Parameters"
+gci "HKLM:\SYSTEM\CurrentControlSet\services\HTTP\"
 
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\HTTP\Parameters" -Name MaxFieldLength -Value 65534
+
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\HTTP\Parameters" -Name MaxRequestBytes -Value 16777216
 
 # nano on ESXi
 # http://www.v-front.de/2016/07/how-to-deploy-windows-nano-server-tp5.html
