@@ -185,6 +185,15 @@ docker run microsoft/windowsservercore hostname
 
 # To change the timezone
 # tzutil
+Paris : tzutil /s "Romance Standard Time"
+
+cmd /c w32tm /config /syncfromflags:domhier /update && w32tm /resync 
+HKLM\SYSTEM\CurrentControlSet\Services\w32time\Parameters 
+Type = NT5DS
+
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\w32time\Parameters" -Name Type -Value "NT5DS"
+
+
 
 
 # nano on ESXi
