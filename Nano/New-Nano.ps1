@@ -168,7 +168,17 @@ setx PATH $env:path /M
 
 
 dockerd --register-service
-Start-Service Docker
+Start-Service Docker  # This will create the fodler C:\ProgramData\docker
+
+# Configure Docker Daemon
+# Pour ce faire, un ficher daemon.json dans c :\ProgramData\docker\config
+# https://msdn.microsoft.com/en-us/virtualization/windowscontainers/docker/configure_docker_daemon
+{
+    "hosts": ["tcp://0.0.0.0:2376", "npipe://"]
+}
+
+# Restart docker service
+Restart-Service docker
 
 docker pull microsoft/nanoserver
 docker images
