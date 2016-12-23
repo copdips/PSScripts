@@ -12,7 +12,7 @@ function Uninstall-HotFix {
     if($hotFix) 
     {
         $hotFixNumber = $HotfixID.Replace("KB","")
-        Write-Host "$computername : Found the hotfix $HotFixID ,and uninstalling it"
+        Write-Host "$computername : Found the hotfix $HotFixID , and uninstalling it"
         $UninstallString = "cmd.exe /c wusa.exe /uninstall /KB:$hotFixNumber /quiet /norestart"
         # ([WMICLASS]"\\$computername\ROOT\CIMV2:win32_process").Create($UninstallString) | out-null
         Invoke-Command -cn $computername {$UninstallString}
