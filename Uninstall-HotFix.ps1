@@ -7,7 +7,7 @@ function Uninstall-HotFix {
         [string] $HotFixID
     )            
 
-    $hotFix = Get-WmiObject win32_quickfixengineering | ? {$_.HotFixId -match $HotFixID}    
+    $hotFix = Get-WmiObject -ComputerName $computername -Class win32_quickfixengineering | ? {$_.HotFixId -match $HotFixID}    
 
     if($hotFix) 
     {
