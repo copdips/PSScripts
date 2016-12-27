@@ -1,4 +1,4 @@
-
+# http://techibee.com/powershell/powershell-uninstall-windows-hotfixesupdates/1084
 # It's better to use this comdlet when there's no other wusa process is also working on the computer
 
 function Uninstall-HotFix
