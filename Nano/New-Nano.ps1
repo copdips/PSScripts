@@ -247,7 +247,7 @@ Get-CimInstance Win32_NTLogEvent -Filter 'LogFile="System" and Type="Error"' | S
 #Test if PowerShell has been run as administrator - Source: http://www.jonathanmedd.net/2014/01/testing-for-admin-privileges-in-powershell.html
 if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {
-
+    Write-Verbose "You're in Administrator context"
 }
 else{
     Write-Host "This script requies that it is 'Run as Administrator' - Please run it again by right clicking and selete 'Run as Administrator'"
