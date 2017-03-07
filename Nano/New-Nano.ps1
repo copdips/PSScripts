@@ -5,6 +5,8 @@
 # Ref : https://technet.microsoft.com/en-us/windows-server-docs/get-started/nano-server-quick-start
 # Ref : https://technet.microsoft.com/en-us/windows-server-docs/get-started/deploy-nano-server
 
+# Ref : https://michaelryom.dk/auto-create-nano-server-for-esxi-with-powershell
+
 
 $imagePath = "D:\xiang\iso\Windows Server 2016\14393.0.160715-1616.RS1_RELEASE_SERVER_EVAL_X64FRE_EN-US.ISO"
 
@@ -241,6 +243,19 @@ Get-CimInstance Win32_NTLogEvent -Filter 'LogFile="System" and Type="Error"' | S
 
 # Expand Disk, C:\ for example
 # Run as Administrator elevated
+
+#Test if PowerShell has been run as administrator - Source: http://www.jonathanmedd.net/2014/01/testing-for-admin-privileges-in-powershell.html
+if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] “Administrator”))
+{
+
+}
+else{
+    Write-Host "This script requies that it is 'Run as Administrator' - Please run it again by right clicking and selete 'Run as Administrator'"
+    $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    Exit
+}
+#^End of Test if PowerShell has been run as administrator
+
 $MaxSize = (Get-PartitionSupportedSize -DriveLetter c).sizeMax
 Resize-Partition -DriveLetter c -Size $MaxSize
 #By Diskpart
