@@ -2,11 +2,12 @@
 
 Configuration ScriptFolder
 {
-    node '12R208'
+    node '12R201'
     {
         File ScriptFiles
         {
-            SourcePath = "\\contoso\netlogon\testDSC"
+            SourcePath = "\\contoso.com\netlogon\testDSC"
+            #SourcePath = "\\12R201\C$\DSC\testDSC"
             DestinationPath = "C:\DSC"
             Ensure = "Present"
             Type = "Directory"
@@ -18,3 +19,5 @@ Configuration ScriptFolder
 ScriptFolder
 
 Start-DscConfiguration .\ScriptFolder
+
+get-job

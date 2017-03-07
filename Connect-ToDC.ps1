@@ -16,9 +16,11 @@ $credContoso = new-object -typename System.Management.Automation.PSCredential -a
 
 $PSSessionOption = New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck
 
-Enter-PSSession 12R201.contoso.com -Credential $credContoso -UseSSL -SessionOption $PSSessionOption
+# Enter-PSSession 12R201.contoso.com -Credential $credContoso -UseSSL -SessionOption $PSSessionOption
 
-sl c:\temp
+Enter-PSSession 12R201 -Credential $credContoso
+
+sl c:\DSC
 
 
 # # Generate a random AES Encryption Key.

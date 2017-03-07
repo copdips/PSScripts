@@ -27,6 +27,13 @@ Configuration ScriptFolderVersion
 ScriptFolderVersion -Server 12R208
 
 
-Start-DscConfiguration .\ScriptFolderVersion
+Start-DscConfiguration .\ScriptFolderVersion -Verbose
 
-icm 12R208 {gp HKLM:\SOFTWARE\dsc}
+Get-Job
+
+
+Invoke-Command 12R208 {Get-ItemProperty HKLM:\SOFTWARE\dsc}
+
+Invoke-Command 12R208 {Get-ItemProperty HKLM:\SOFTWARE\}
+
+Invoke-Command 12R208 {Gci HKLM:\SOFTWARE\}

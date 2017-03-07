@@ -13,7 +13,7 @@ Configuration ScriptFolderVersionUnzip
         File ScriptFiles
         {
             SourcePath = "\\contoso\netlogon\testDSC"
-            DestinationPath = "C:\DSC"
+            DestinationPath = "C:\scripts"
             Ensure = "Present"
             Type = "Directory"
             Recurse = $true
@@ -37,7 +37,7 @@ Configuration ScriptFolderVersionUnzip
     }
 }
 
-ScriptFolderVersionUnZip -output C:\server1Config
+ScriptFolderVersionUnZip -output C:\server1Config -Server 12R207
 
-Start-DscConfiguration -Path C:\server1Config -JobName Server1Config –Verbose
+Start-DscConfiguration -Path C:\server1Config -JobName Server1Config -Verbose
 
