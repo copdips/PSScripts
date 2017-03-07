@@ -1,8 +1,8 @@
-$Path = "D:\xiang\Dropbox\Git"
 $ModuleName = "aModuleNameHere"
+$Path = "D:\xiang\Dropbox\Git"
 $Author = "copdips"
 $Description = "$ModuleName PowerShell module"
-$PowerShellVersion = "5.1"
+$PowerShellVersion = $PSVersionTable.PSVersion.ToString()
 
 # Create the module and private function directories
 mkdir $Path\$ModuleName
