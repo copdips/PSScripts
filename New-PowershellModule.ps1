@@ -1,6 +1,9 @@
+$ModuleVersion = "1.0"
 $ModuleName = "aModuleNameHere"
-$Path = "D:\xiang\Dropbox\Git"
+$ParentPath = "D:\xiang\Dropbox\Git"
+$Path=Join-Path $ParentPath $ModuleName
 $Author = "copdips"
+$CompanyName = "contoso.com"
 $Description = "$ModuleName PowerShell module"
 $PowerShellVersion = $PSVersionTable.PSVersion.ToString()
 
@@ -14,13 +17,20 @@ New-Item "$Path\$ModuleName\en-US" -ItemType Directory # For about_Help files
 New-Item "$Path\Tests" -ItemType Directory
 
 #Create the module and related files
-New-Item "$Path\$ModuleName\$ModuleName.psm1" -ItemType File
-New-Item "$Path\$ModuleName\$ModuleName.Format.ps1xml" -ItemType File
+New-Item "$Path\$ModuleName.psm1" -ItemType File
+New-Item "$Path\$ModuleName.Format.ps1xml" -ItemType File
 New-Item "$Path\$ModuleName\en-US\about_$ModuleName.help.txt" -ItemType File
 New-Item "$Path\Tests\$ModuleName.Tests.ps1" -ItemType File
-New-ModuleManifest -Path $Path\$ModuleName\$ModuleName.psd1 `
-                   -RootModule $Path\$ModuleName\$ModuleName.psm1 `
-                   -Description $Description `
-                   -PowerShellVersion $PowerShellVersion `
-                   -Author $Author `
-                   -FormatsToProcess "$ModuleName.Format.ps1xml"
+
+$paramHash = @{
+    ModuleVersion = $ModuleVersion
+    Path = "$Path\$ModuleName.psd1"
+    RootModule = "$Path\$ModuleName.psm1"
+    FormatsToProcess = "$Path\$ModuleName.Format.ps1xml"
+    Description = $Description
+    PowerShellVersion = $PowerShellVersion
+    Author = $Author
+    CompanyName = $CompanyName
+}
+
+New-ModuleManifest @paramHash
