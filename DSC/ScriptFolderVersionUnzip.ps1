@@ -13,7 +13,7 @@ Configuration ScriptFolderVersionUnzip
         File ScriptFiles
         {
             SourcePath = "\\contoso\netlogon\testDSC"
-            DestinationPath = "C:\scripts"
+            DestinationPath = "C:\DSC"
             Ensure = "Present"
             Type = "Directory"
             Recurse = $true
@@ -30,14 +30,15 @@ Configuration ScriptFolderVersionUnzip
         Archive ZippedModule
         {
             DependsOn = "[File]ScriptFiles"
-            Path = "C:\scripts\PoshModules\PoshModules.zip"
+            Path = "C:\DSC\PoshModules\PoshModules.zip"
             Destination = $modulePath
             Ensure = "Present"
         }
     }
 }
 
-ScriptFolderVersionUnZip -output C:\server1Config -Server 12R207
+ScriptFolderVersionUnZip -output C:\server1Config -Server 12R207,12R208,08R201
 
-Start-DscConfiguration -Path C:\server1Config -JobName Server1Config -Verbose
+Start-DscConfiguration -Path C:\server1Config -JobName Server1Config -force
+
 

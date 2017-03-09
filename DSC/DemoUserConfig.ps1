@@ -2,9 +2,9 @@
 
 Configuration DemoUser
 {
-    $Password = Get-Credential
+    $cred = (Get-Credential).Password
 
-    node Server1
+    node 12R201
     {
         User EdUser
         {
@@ -19,4 +19,15 @@ Configuration DemoUser
     }
 }
 
-DemoUser
+$configData = @{
+    AllNodes = @(
+        @{
+            NodeName = "12R201";
+            PSDscAllowPlainTextPassword = $true
+        }
+    )
+}
+
+DemoUser -ConfigurationData $configData
+
+Start-DscConfiguration C:\DemoUser -Verbose
