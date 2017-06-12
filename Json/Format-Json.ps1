@@ -1,3 +1,5 @@
+# https://github.com/PowerShell/PowerShell/issues/2736
+
 function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
   $indent = 0;
   ($json -Split '\n' |
