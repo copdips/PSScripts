@@ -1,7 +1,7 @@
 $ModuleVersion = "1.0"
 $ModuleName = "aModuleNameHere"
 $ParentPath = "D:\xiang\Dropbox\Git"
-$Path=Join-Path $ParentPath $ModuleName
+$Path = Join-Path $ParentPath $ModuleName
 $Author = "copdips"
 $CompanyName = "contoso.com"
 $Description = "$ModuleName PowerShell module"
@@ -23,14 +23,14 @@ New-Item "$Path\$ModuleName\en-US\about_$ModuleName.help.txt" -ItemType File
 New-Item "$Path\Tests\$ModuleName.Tests.ps1" -ItemType File
 
 $paramHash = @{
-    ModuleVersion = $ModuleVersion
-    Path = "$Path\$ModuleName.psd1"
-    RootModule = "$Path\$ModuleName.psm1"
-    FormatsToProcess = "$Path\$ModuleName.Format.ps1xml"
-    Description = $Description
+    ModuleVersion     = $ModuleVersion
+    Path              = "$Path\$ModuleName.psd1"
+    RootModule        = "$Path\$ModuleName.psm1"
+    FormatsToProcess  = "$Path\$ModuleName.Format.ps1xml"
+    Description       = $Description
     PowerShellVersion = $PowerShellVersion
-    Author = $Author
-    CompanyName = $CompanyName
+    Author            = $Author
+    CompanyName       = $CompanyName
 }
 
 New-ModuleManifest @paramHash

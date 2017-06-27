@@ -15,5 +15,5 @@ WorkFlow Get-EventLogData {
         Sequence {$WORKFLOW:i++ ; Sleep 5 ; Get-EventLog -LogName 'Windows PowerShell' -Newest 1 }
         Sequence {$WORKFLOW:i++ ; Sleep 5 ; Get-EventLog -LogName 'Windows PowerShell' -Newest 1 }
         Sequence {$WORKFLOW:i++ ; Sleep 5 ; Get-EventLog -LogName 'Windows PowerShell' -Newest 1 }
-    } 
+    }
 }

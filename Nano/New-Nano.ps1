@@ -12,7 +12,7 @@ $imagePath = "D:\xiang\iso\Windows Server 2016\14393.0.160715-1616.RS1_RELEASE_S
 
 $imageDriveLetter = (Get-DiskImage -ImagePath $imagePath | Get-Volume).DriveLetter
 
-if (-not $imageDriveLetter) { 
+if (-not $imageDriveLetter) {
     $imageDriveLetter = Mount-DiskImage $imagePath -PassThru | Get-Volume |  select -exp DriveLetter
 }
 
@@ -24,7 +24,7 @@ $cred = New-Object -TypeName System.Management.Automation.PSCredential -Argument
 
 
 # Ensure you have the lastest version of DSIM
-# To service this Windows image requires the latest version of the DISM. See http://go.microsoft.com/fwlink/?LinkId=293395 to find the latest version of DISM, 
+# To service this Windows image requires the latest version of the DISM. See http://go.microsoft.com/fwlink/?LinkId=293395 to find the latest version of DISM,
 # and http://go.microsoft.com/fwlink/?LinkId=293394 to learn how to install the latest version of DISM from the ADK on your computer.
 
 # Workgroup
@@ -199,8 +199,8 @@ docker run microsoft/windowsservercore hostname
 # tzutil
 Paris : tzutil /s "Romance Standard Time"
 
-cmd /c w32tm /config /syncfromflags:domhier /update && w32tm /resync 
-HKLM\SYSTEM\CurrentControlSet\Services\w32time\Parameters 
+cmd /c w32tm /config /syncfromflags:domhier /update && w32tm /resync
+HKLM\SYSTEM\CurrentControlSet\Services\w32time\Parameters
 Type = NT5DS
 
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\w32time\Parameters" -Name Type -Value "NT5DS"
@@ -231,25 +231,43 @@ Get-FileHash $imagePath
 
 $credContoso = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList Contoso\Xiang, (ConvertTo-SecureString -String "Password1" -AsPlainText) -Force)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Enter-PSSession 192.168.111.161 -Credential $credContoso
 
 # Keyboard
 # Doesn't work as need International PsModule : Set-WinUserLanguageList -LanguageList fr-fr
 # Nano with unattendfile : https://social.technet.microsoft.com/Forums/en-US/d3554b6d-5539-40da-bd1a-c728e30e0158/changing-regional-settings-on-nano-server?forum=NanoServer
 
-# Get event log 
+# Get event log
 # Nano doesn't have Get-EventLog, but have Get-WiEvent and Win32_NTLogEvent
-Get-CimInstance Win32_NTLogEvent -Filter 'LogFile="System" and Type="Error"' | Select-Object EventCode,InsertionStrings,Message,RecordNumber,SourceName,TimeGenerated,TimeWritten,Type,User | Export-Csv -NoTypeInformation -NoClobber -Path C:\SystemEventErrors.csv 
+Get-CimInstance Win32_NTLogEvent -Filter 'LogFile="System" and Type="Error"' | Select-Object EventCode, InsertionStrings, Message, RecordNumber, SourceName, TimeGenerated, TimeWritten, Type, User | Export-Csv -NoTypeInformation -NoClobber -Path C:\SystemEventErrors.csv
 
 # Expand Disk, C:\ for example
 # Run as Administrator elevated
 
 #Test if PowerShell has been run as administrator - Source: http://www.jonathanmedd.net/2014/01/testing-for-admin-privileges-in-powershell.html
-if(([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{
+if (([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Verbose "You're in Administrator context"
 }
-else{
+else {
     Write-Host "This script requies that it is 'Run as Administrator' - Please run it again by right clicking and selete 'Run as Administrator'"
     $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     Exit
@@ -259,4 +277,4 @@ else{
 $MaxSize = (Get-PartitionSupportedSize -DriveLetter c).sizeMax
 Resize-Partition -DriveLetter c -Size $MaxSize
 #By Diskpart
-"rescan","select volume 2","extend" | diskpart
+"rescan", "select volume 2", "extend" | diskpart
