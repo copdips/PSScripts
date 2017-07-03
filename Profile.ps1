@@ -37,7 +37,7 @@ Function Prompt()
     Write-Host "$($env:USERNAME) @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
     Write-Host $path -ForegroundColor Green
 
-    Write-Host "$shortPSVersion>" -ForegroundColor Cyan -NoNewLine
+    Write-Host "$shortPSVersion>" -BackgroundColor Darkcyan -ForegroundColor Black -NoNewLine
 
     return ' '
 
