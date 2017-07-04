@@ -33,7 +33,7 @@ Function Prompt()
     $fullPSVersion = $PSVersionTable.PSVersion
     $shortPSVersion = $fullPSVersion.Major.toString() + '.' + $fullPSVersion.Minor.toString()
 
-    Write-Host ""
+    Write-Host
     Write-Host "$($now.toString("HH:mm:ss")) " -ForegroundColor Cyan -NoNewline
     Write-Host "$($env:USERNAME) @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
     Write-Host $path -ForegroundColor Green
