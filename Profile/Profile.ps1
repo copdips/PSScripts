@@ -9,6 +9,10 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     [System.Collections.ArrayList]$newPSModulePathArrayList = $newPSModulePath -split ';'
     $newPSModulePathArrayList.Insert(2, 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules')
     $env:PSModulePath = ($newPSModulePathArrayList | Select-Object -Unique) -join ';'
+} else {
+    Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\NetTCPIP\NetTCPIP.psd1 -Force
+    Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\DnsClient\DnsClient.psd1 -Force
+
 }
 
 Set-PSReadlineOption -EditMode Emacs
@@ -533,6 +537,7 @@ Set-Alias os Out-String
 Set-Alias ep Enter-PSSession
 Set-Alias fromjson ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
+Set-Alias tnc Test-NetConnection
 
 Set-Alias go Enter-zxPSSession
 Set-Alias rdp Enter-zxRDPSession

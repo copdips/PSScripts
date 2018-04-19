@@ -1,0 +1,47 @@
+u// Place your settings in this file to overwrite the default settings
+{
+    "files.trimTrailingWhitespace": true,
+    "files.autoSave": "onFocusChange",
+    // "files.autoSaveDelay": 5000,
+    "terminal.integrated.shell.windows": "C:\\Windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "terminal.integrated.cursorStyle": "line",
+    "editor.formatOnType": true,
+    "powershell.codeFormatting.ignoreOneLineBlock": false,
+    "sync.gist": "807087b0c14c1029f51bdc8f3d5e9a5c",
+    "sync.lastUpload": "2018-04-13T20:37:49.864Z",
+    "sync.autoDownload": false,
+    "sync.autoUpload": false,
+    "sync.lastDownload": "2017-06-15T22:12:39.033Z",
+    "sync.forceDownload": false,
+    "sync.anonymousGist": false,
+    "sync.host": "",
+    "sync.pathPrefix": "",
+    "sync.quietSync": false,
+    "javascript.validate.enable": false,
+    "standard.autoFixOnSave": true,
+    "editor.find.autoFindInSelection": true,
+    "editor.wordWrap": "on",
+    "sync.askGistName": false,
+    "workbench.commandPalette.preserveInput": true,
+    "window.restoreWindows": "all",
+    "code-runner.executorMap": {
+        "python": "set PYTHONIOENCODING=utf8 && python"
+    },
+    "gitlens.advanced.messages": {
+        "suppressCommitHasNoPreviousCommitWarning": false,
+        "suppressCommitNotFoundWarning": false,
+        "suppressFileNotUnderSourceControlWarning": false,
+        "suppressGitVersionWarning": false,
+        "suppressLineUncommittedWarning": false,
+        "suppressNoRepositoryWarning": false,
+        "suppressResultsExplorerNotice": false,
+        "suppressShowKeyBindingsNotice": true,
+        "suppressUpdateNotice": false,
+        "suppressWelcomeNotice": true
+    },
+    "vim.disableExtension": true,
+    "gitlens.keymap": "chorded",
+    "window.zoomLevel": 0,
+    "sync.removeExtensions": true,
+    "sync.syncExtensions": true
+}

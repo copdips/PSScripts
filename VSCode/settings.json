@@ -1,7 +1,0 @@
-// Place your settings in this file to overwrite the default settings
-{
-    "editor.wordWrap": "on",
-    "terminal.integrated.shell.windows": 
-    "C:\\Windows\\SysNative\\WindowsPowerShell\\v1.0\\powershell.exe",
-    "editor.renderIndentGuides": true
-}

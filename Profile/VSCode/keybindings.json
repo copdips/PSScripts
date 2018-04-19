@@ -1,0 +1,157 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+    {
+        "key": "alt+right",
+        "command": "workbench.action.terminal.focusNext"
+    },
+    {
+        "key": "alt+left",
+        "command": "workbench.action.terminal.focusPrevious"
+    },
+    {
+        "key": "ctrl+t",
+        "command": "workbench.action.terminal.selectDefaultShell"
+    },
+    {
+        "key": "shift+alt+r",
+        "command": "code-runner.run"
+    },
+    {
+        "key": "ctrl+f11",
+        "command": "workbench.action.toggleMaximizedPanel"
+    },
+    {
+        "key": "ctrl+f12",
+        "command": "editor.action.previewDeclaration",
+        "when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "alt+f12",
+        "command": "-editor.action.previewDeclaration",
+        "when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor && !isInEmbeddedEditor"
+    },
+    {
+        "key": "ctrl+backspace",
+        "command": "-workbench.action.terminal.deleteWordLeft",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+delete",
+        "command": "-workbench.action.terminal.deleteWordRight",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+t",
+        "command": "workbench.action.terminal.focus"
+    },
+    {
+        "key": "f2",
+        "command": "workbench.action.terminal.rename"
+    },
+    {
+        "key": "alt+`",
+        "command": "workbench.action.terminal.toggleTerminal"
+    },
+    {
+        "key": "ctrl+`",
+        "command": "-workbench.action.terminal.toggleTerminal"
+    },
+    {
+        "key": "ctrl+alt+`",
+        "command": "workbench.action.terminal.kill"
+    },
+    {
+        "key": "ctrl+u",
+        "command": "deleteAllLeft"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "deleteAllRight"
+    },
+    {
+        "key": "ctrl+k ctrl+u",
+        "command": "-editor.action.removeCommentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+k ctrl+u",
+        "command": "extension.changeCase",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+u",
+        "command": "-extension.changeCase",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+alt+`",
+        "command": "workbench.action.terminal.new"
+    },
+    {
+        "key": "ctrl+shift+`",
+        "command": "-workbench.action.terminal.new"
+    },
+    {
+        "key": "ctrl+shift+r",
+        "command": "restructuredtext.showPreviewToSide",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+k r",
+        "command": "-restructuredtext.showPreviewToSide",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "ctrl+shift+r",
+        "command": "-restructuredtext.showPreview",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+v",
+        "command": "toggleVim"
+    },
+    {
+        "key": "shift+alt+1",
+        "command": "workbench.action.terminal.focusAtIndex1"
+    },
+    {
+        "key": "shift+alt+2",
+        "command": "workbench.action.terminal.focusAtIndex2"
+    },
+    {
+        "key": "shift+alt+3",
+        "command": "workbench.action.terminal.focusAtIndex3"
+    },
+    {
+        "key": "shift+alt+4",
+        "command": "workbench.action.terminal.focusAtIndex4"
+    },
+    {
+        "key": "shift+alt+5",
+        "command": "workbench.action.terminal.focusAtIndex5"
+    },
+    {
+        "key": "shift+alt+6",
+        "command": "workbench.action.terminal.focusAtIndex6"
+    },
+    {
+        "key": "shift+alt+7",
+        "command": "workbench.action.terminal.focusAtIndex7"
+    },
+    {
+        "key": "shift+alt+8",
+        "command": "workbench.action.terminal.focusAtIndex8"
+    },
+    {
+        "key": "shift+alt+9",
+        "command": "workbench.action.terminal.focusAtIndex9"
+    },
+    {
+        "key": "ctrl+alt+e",
+        "command": "workbench.action.quickOpen"
+    },
+    {
+        "key": "ctrl+e",
+        "command": "-workbench.action.quickOpen"
+    }
+]
