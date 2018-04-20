@@ -11,8 +11,6 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     $env:PSModulePath = ($newPSModulePathArrayList | Select-Object -Unique) -join ';'
 } else {
     Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\NetTCPIP\NetTCPIP.psd1 -Force
-    Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\DnsClient\DnsClient.psd1 -Force
-
 }
 
 Set-PSReadlineOption -EditMode Emacs
