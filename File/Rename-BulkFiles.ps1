@@ -4,4 +4,4 @@
 $pattern = '\[nameToBeReplaced\].'
 $filePath = 'D:\xiang\Videos'
 
-PS C:\WINDOWS\system32> gci $filePath -File | Rename-Item -NewName {$_.name -replace $pattern,''} 
+PS C:\WINDOWS\system32> gci $filePath -File | Rename-Item -NewName {$_.name -replace $pattern,''}

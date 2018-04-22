@@ -1,9 +1,9 @@
 # Sublime Text 3 like
 # color code : http://htmlcolorcodes.com
 
-Function Set-Powershell_ISE_Font_Color {    
+Function Set-Powershell_ISE_Font_Color {
 
-	  $psISE.Options.FontName = 'Monaco'
+    $psISE.Options.FontName = 'Monaco'
     $psISE.Options.FontSize = 11
     $psISE.Options.ScriptPaneBackgroundColor = '#FF272822'
     $psISE.Options.TokenColors['Command'] = '#FFA6E22E'
@@ -25,7 +25,7 @@ Function Set-Powershell_ISE_Font_Color {
     $psISE.Options.TokenColors['CommandArgument'] = '#FFA6E22E'
     $psISE.Options.TokenColors['Number'] = '#FFAE81FF'
     $psISE.Options.TokenColors['Operator'] = '#FFF92672'
-    
-} 
+
+}
 
 Set-Powershell_ISE_Font_Color
