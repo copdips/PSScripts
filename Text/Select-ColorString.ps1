@@ -65,55 +65,6 @@ function Select-ColorString {
             HelpMessage = "String or list of string to be checked against the pattern")]
         [String[]]$Content,
 
-        [Parameter()]
-        [ValidateSet(
-            'Black',
-            'DarkBlue',
-            'DarkGreen',
-            'DarkCyan',
-            'DarkRed',
-            'DarkMagenta',
-            'DarkYellow',
-            'Gray',
-            'DarkGray',
-            'Blue',
-            'Green',
-            'Cyan',
-            'Red',
-            'Magenta',
-            'Yellow',
-            'White')]
-        [String]$ForegroundColor = 'Black',
-
-        [Parameter()]
-        [ValidateSet(
-            'Black',
-            'DarkBlue',
-            'DarkGreen',
-            'DarkCyan',
-            'DarkRed',
-            'DarkMagenta',
-            'DarkYellow',
-            'Gray',
-            'DarkGray',
-            'Blue',
-            'Green',
-            'Cyan',
-            'Red',
-            'Magenta',
-            'Yellow',
-            'White')]
-        [ValidateScript( {
-                if ($Host.ui.RawUI.BackgroundColor -eq $_) {
-                    throw "Current host background color is also set to `"$_`", " `
-                        + "please choose another color for a better readability"
-                }
-                else {
-                    return $true
-                }
-            })]
-        [String]$BackgroundColor = 'Yellow',
-
         [Switch]$CaseSensitive = $false,
 
         [Parameter(
@@ -129,7 +80,55 @@ function Select-ColorString {
         [Switch]$KeepNotMatch = $false
     )
 
+    DynamicParam {
+        $foregroundColorParamName = 'ForegroundColor'
+        $backgroundColorParamName = 'BackgroundColor'
+
+        $basicAttributes = New-Object System.Management.Automation.ParameterAttribute
+        $basicAttributes.ParameterSetName = "__AllParameterSets"
+        $basicAttributes.Mandatory = $false
+
+        $colorlist = [enum]::GetNames([System.ConsoleColor])
+        $validationset = New-Object -Type System.Management.Automation.ValidateSetAttribute -ArgumentList $colorlist
+
+        $backgroundColorValidateScript = {
+            if ($Host.ui.RawUI.BackgroundColor -eq $_) {
+                throw "Current host background color is also set to `"$_`", " `
+                    + "please choose another color for a better readability"
+            }
+            else {
+                return $true
+            }
+        }
+        $validationScript = New-Object -Type System.Management.Automation.ValidateScriptAttribute -ArgumentList $backgroundColorValidateScript
+
+        $foregroundColorCollection = New-Object -Type System.Collections.ObjectModel.Collection[System.Attribute]
+        $foregroundColorAttributes = $basicAttributes
+        $foregroundColorCollection.Add($foregroundColorAttributes)
+        $foregroundColorCollection.Add($validationset)
+
+        $backgroundColorCollection = New-Object -Type System.Collections.ObjectModel.Collection[System.Attribute]
+        $backgroundColorAttributes = $basicAttributes
+        $backgroundColorCollection.Add($backgroundColorAttributes)
+        $backgroundColorCollection.Add($validationset)
+        $backgroundColorCollection.Add($validationScript)
+
+        $foreground = New-Object -Type System.Management.Automation.RuntimeDefinedParameter($foregroundColorParamName, [String], $foregroundColorCollection)
+        $background = New-Object -Type System.Management.Automation.RuntimeDefinedParameter($backgroundColorParamName, [String], $backgroundColorCollection)
+
+        $PSBoundParameters[$foregroundColorParamName] = 'Black'
+        $PSBoundParameters[$backgroundColorParamName] = 'Yellow'
+
+        $dynamicParams = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        $dynamicParams.Add($foregroundColorParamName, $foreground)
+        $dynamicParams.Add($backgroundColorParamName, $background)
+
+        return $dynamicParams
+    }
+
     begin {
+        $foregroundColor = $PsBoundParameters[$foregroundColorParamName]
+        $backgroundColor = $PsBoundParameters[$backgroundColorParamName]
         $paramSelectString = @{
             Pattern       = $Pattern
             AllMatches    = $true
@@ -152,8 +151,8 @@ function Select-ColorString {
                         $paramWriteHost = @{
                             Object          = $line.Substring($myMatch.Index, $myMatch.Length)
                             NoNewline       = $true
-                            ForegroundColor = $ForegroundColor
-                            BackgroundColor = $BackgroundColor
+                            ForegroundColor = $foregroundColor
+                            BackgroundColor = $backgroundColor
                         }
                         Write-Host @paramWriteHost
 
