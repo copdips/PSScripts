@@ -8,6 +8,20 @@ function Select-ColorString {
 
     inspired by: https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
 
+    .DESCRIPTION
+
+    Find the matches in a given content by the pattern and write the matches in color like grep
+
+    DYNAMIC PARAMETERS
+    -ForegroundColor <String>
+        The foreground color to highlight the string matching the pattern.
+        The default value is "Black".
+
+    -BackgroundColor <String>
+        The background color to highlight the string matching the pattern.
+        The default value is "Yellow".
+
+
     .EXAMPLE
 
     > 'aa bb cc', 'A line' | Select-ColorString a
