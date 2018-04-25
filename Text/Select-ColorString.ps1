@@ -47,7 +47,6 @@ function Select-ColorString {
     #>
 
     [Cmdletbinding()]
-    # [Alias('scs')]
     Param(
         [Parameter()]
         [ValidateNotNullOrEmpty()]
@@ -135,14 +134,12 @@ function Select-ColorString {
 
             if (0 -lt $matchList.Count) {
                 if (-not $NotMatch) {
-                    $startIndex = 0
+                    $index = 0
                     foreach ($myMatch in $matchList.Matches) {
-                        $length = $myMatch.Index - $startIndex
-                        try {
-                            Write-Host $line.Substring($startIndex, $length) -NoNewline
-                        }
-                        catch {
-                        }
+                        $length = $myMatch.Index - $index
+
+                        Write-Host $line.Substring($index, $length) -NoNewline
+
                         $paramWriteHost = @{
                             Object          = $line.Substring($myMatch.Index, $myMatch.Length)
                             NoNewline       = $true
@@ -150,9 +147,10 @@ function Select-ColorString {
                             BackgroundColor = $BackgroundColor
                         }
                         Write-Host @paramWriteHost
-                        $startIndex = $myMatch.Index + $myMatch.Length
+
+                        $index = $myMatch.Index + $myMatch.Length
                     }
-                    Write-Host $line.Substring($startIndex)
+                    Write-Host $line.Substring($index)
                 }
             }
             else {
