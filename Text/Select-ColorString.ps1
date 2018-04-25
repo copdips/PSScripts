@@ -1,5 +1,4 @@
 function Select-ColorString {
-
     <#
     .SYNOPSIS
 
@@ -131,15 +130,16 @@ function Select-ColorString {
     )
 
     begin {
+        $paramSelectString = @{
+            Pattern       = $Pattern
+            AllMatches    = $true
+            CaseSensitive = $CaseSensitive
+        }
+        $writeNotMatch = $KeepNotMatch -or $NotMatch
     }
 
     process {
         foreach ($line in $Content) {
-            $paramSelectString = @{
-                Pattern       = $Pattern
-                AllMatches    = $true
-                CaseSensitive = $CaseSensitive
-            }
             $matchList = $line | Select-String @paramSelectString
 
             if (0 -lt $matchList.Count) {
@@ -163,7 +163,7 @@ function Select-ColorString {
                 }
             }
             else {
-                if ($KeepNotMatch -or $NotMatch) {
+                if ($writeNotMatch) {
                     Write-Host "$line"
                 }
             }
