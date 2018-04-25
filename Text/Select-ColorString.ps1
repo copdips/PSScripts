@@ -137,7 +137,6 @@ function Select-ColorString {
                     $index = 0
                     foreach ($myMatch in $matchList.Matches) {
                         $length = $myMatch.Index - $index
-
                         Write-Host $line.Substring($index, $length) -NoNewline
 
                         $paramWriteHost = @{
