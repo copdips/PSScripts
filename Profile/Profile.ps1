@@ -170,310 +170,127 @@ Function Get-CurrentPath {
     return $currentPath
 }
 
-Function Find-Word {
-    # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
+function Select-ColorString {
     [Cmdletbinding()]
-    [Alias("Highlight")]
+    # [Alias('scs')]
     Param(
-        [Parameter(Position = 1)]
-        [ValidateNotNull()]
-        [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [String]$Pattern = $(throw "$($MyInvocation.MyCommand.Name) : " `
+                + "Cannot bind null or empty value to the parameter `"Pattern`""),
 
-        [Parameter(ValueFromPipeline = $true, Position = 0)] [string[]] $Content
-    )
+        [Parameter(
+            ValueFromPipeline = $true,
+            HelpMessage = "String or list of string to be checked against the pattern")]
+        [String[]]$Content,
 
-    Begin {
-        $Color = @{
-            0  = 'Yellow'
-            1  = 'Magenta'
-            2  = 'Red'
-            3  = 'Cyan'
-            4  = 'Green'
-            5  = 'Blue'
-            6  = 'DarkGray'
-            7  = 'Gray'
-            8  = 'DarkYellow'
-            9  = 'DarkMagenta'
-            10 = 'DarkRed'
-            11 = 'DarkCyan'
-            12 = 'DarkGreen'
-            13 = 'DarkBlue'
-        }
+        [Parameter()]
+        [ValidateSet(
+            'Black',
+            'DarkBlue',
+            'DarkGreen',
+            'DarkCyan',
+            'DarkRed',
+            'DarkMagenta',
+            'DarkYellow',
+            'Gray',
+            'DarkGray',
+            'Blue',
+            'Green',
+            'Cyan',
+            'Red',
+            'Magenta',
+            'Yellow',
+            'White')]
+        [String]$ForegroundColor = 'Black',
 
-        $ColorLookup = @{}
-
-        For ($i = 0; $i -lt $Words.count ; $i++) {
-            if ($i -eq 13) {
-                $j = 0
-            }
-            else {
-                $j = $i
-            }
-
-            $ColorLookup.Add($Words[$i], $Color[$j])
-            $j++
-        }
-
-    }
-
-    Process {
-        $Content | Select-String -List $Words | ForEach-Object {
-            $lineString = $_.ToString()
-
-            $TotalLength = 0
-
-            $lineString.split() | `
-                Where-Object {-not [string]::IsNullOrWhiteSpace($lineString)} | ` #Filter-out whiteSpaces
-                ForEach-Object {
-                if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
-                    #"TotalLength : $TotalLength"
-                    $Token = $_
-                    $displayed = $False
-
-                    Foreach ($Word in $Words) {
-                        if ($Token -like "*$Word*") {
-                            $Before, $after = $Token -Split "$Word"
-
-
-                            #"[$Before][$Word][$After]{$Token}`n"
-
-                            Write-Host $Before -NoNewline ;
-                            Write-Host $Word -NoNewline -Fore Black -Back $ColorLookup[$Word];
-                            Write-Host $after -NoNewline ;
-                            $displayed = $true
-                            #Start-Sleep -Seconds 1
-                            #break
-                        }
-
-                    }
-                    If (-not $displayed) {
-                        Write-Host "$Token " -NoNewline
-                    }
-                    else {
-                        Write-Host " " -NoNewline
-                    }
-                    $TotalLength = $TotalLength + $Token.Length + 1
+        [Parameter()]
+        [ValidateSet(
+            'Black',
+            'DarkBlue',
+            'DarkGreen',
+            'DarkCyan',
+            'DarkRed',
+            'DarkMagenta',
+            'DarkYellow',
+            'Gray',
+            'DarkGray',
+            'Blue',
+            'Green',
+            'Cyan',
+            'Red',
+            'Magenta',
+            'Yellow',
+            'White')]
+        [ValidateScript( {
+                if ($Host.ui.RawUI.BackgroundColor -eq $_) {
+                    throw "Current host background color is also set to `"$_`", " `
+                        + "please choose another color for a better readability"
                 }
                 else {
-                    Write-Host '' #New Line
-                    $TotalLength = 0
-
+                    return $true
                 }
+            })]
+        [String]$BackgroundColor = 'Yellow',
 
-                #Start-Sleep -Seconds 0.5
+        [Switch]$CaseSensitive = $false,
 
+        [Parameter(
+            HelpMessage = "If true, write only not matching lines; " `
+                + "if false, write only matching lines")]
+        [Switch]$NotMatch = $false,
+
+        [Parameter(
+            HelpMessage = "If true, write all the lines; " `
+                + "if false, write only matching lines")]
+        [Switch]$KeepNotMatch = $false
+    )
+
+    begin {
+    }
+
+    process {
+        foreach ($line in $Content) {
+            $paramSelectString = @{
+                Pattern       = $Pattern
+                AllMatches    = $true
+                CaseSensitive = $CaseSensitive
             }
-            Write-Host '' #New Line
+            $matchList = $line | Select-String @paramSelectString
+
+            if (0 -lt $matchList.Count) {
+                if (-not $NotMatch) {
+                    $startIndex = 0
+                    foreach ($myMatch in $matchList.Matches) {
+                        $length = $myMatch.Index - $startIndex
+                        try {
+                            Write-Host $line.Substring($startIndex, $length) -NoNewline
+                        }
+                        catch {
+                        }
+                        $paramWriteHost = @{
+                            Object          = $line.Substring($myMatch.Index, $myMatch.Length)
+                            NoNewline       = $true
+                            ForegroundColor = $ForegroundColor
+                            BackgroundColor = $BackgroundColor
+                        }
+                        Write-Host @paramWriteHost
+                        $startIndex = $myMatch.Index + $myMatch.Length
+                    }
+                    Write-Host $line.Substring($startIndex)
+                }
+            }
+            else {
+                if ($KeepNotMatch -or $NotMatch) {
+                    Write-Host "$line"
+                }
+            }
         }
     }
 
     end {
     }
 }
-
-Function Trace-Word {
-    # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
-    [Cmdletbinding()]
-    [Alias("Highlight")]
-    Param(
-        [Parameter(Position = 1)]
-        [ValidateNotNull()]
-        [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
-
-        [Parameter(ValueFromPipeline = $true, Position = 0)] [string[]] $Content
-    )
-
-    Begin {
-        $Color = @{
-            0  = 'Yellow'
-            1  = 'Magenta'
-            2  = 'Red'
-            3  = 'Cyan'
-            4  = 'Green'
-            5  = 'Blue'
-            6  = 'DarkGray'
-            7  = 'Gray'
-            8  = 'DarkYellow'
-            9  = 'DarkMagenta'
-            10 = 'DarkRed'
-            11 = 'DarkCyan'
-            12 = 'DarkGreen'
-            13 = 'DarkBlue'
-        }
-
-        $ColorLookup = @{}
-
-        For ($i = 0; $i -lt $Words.count ; $i++) {
-            if ($i -eq 13) {
-                $j = 0
-            }
-            else {
-                $j = $i
-            }
-
-            $ColorLookup.Add($Words[$i], $Color[$j])
-            $j++
-        }
-
-    }
-
-    Process {
-        $Content | ForEach-Object {
-
-            $TotalLength = 0
-
-            $_.split() | `
-                Where-Object {-not [string]::IsNullOrWhiteSpace($_)} | ` #Filter-out whiteSpaces
-                ForEach-Object {
-                if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
-                    #"TotalLength : $TotalLength"
-                    $Token = $_
-                    $displayed = $False
-
-                    Foreach ($Word in $Words) {
-                        if ($Token -like "*$Word*") {
-                            $Before, $after = $Token -Split "$Word"
-
-
-                            #"[$Before][$Word][$After]{$Token}`n"
-
-                            Write-Host $Before -NoNewline ;
-                            Write-Host $Word -NoNewline -Fore Black -Back $ColorLookup[$Word];
-                            Write-Host $after -NoNewline ;
-                            $displayed = $true
-                            #Start-Sleep -Seconds 1
-                            #break
-                        }
-
-                    }
-                    If (-not $displayed) {
-                        Write-Host "$Token " -NoNewline
-                    }
-                    else {
-                        Write-Host " " -NoNewline
-                    }
-                    $TotalLength = $TotalLength + $Token.Length + 1
-                }
-                else {
-                    Write-Host '' #New Line
-                    $TotalLength = 0
-
-                }
-
-                #Start-Sleep -Seconds 0.5
-
-            }
-            Write-Host '' #New Line
-        }
-    }
-
-    end {
-    }
-
-}
-
-Function Find-Word {
-    # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
-    [Cmdletbinding()]
-    [Alias("Highlight")]
-    Param(
-        [Parameter(Position = 0)]
-        [ValidateNotNull()]
-        [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
-
-        [Parameter(ValueFromPipeline = $true, Position = 1)] [string[]] $Content
-    )
-
-    Begin {
-        $Color = @{
-            0  = 'Yellow'
-            1  = 'Magenta'
-            2  = 'Red'
-            3  = 'Cyan'
-            4  = 'Green'
-            5  = 'Blue'
-            6  = 'DarkGray'
-            7  = 'Gray'
-            8  = 'DarkYellow'
-            9  = 'DarkMagenta'
-            10 = 'DarkRed'
-            11 = 'DarkCyan'
-            12 = 'DarkGreen'
-            13 = 'DarkBlue'
-        }
-
-        $ColorLookup = @{}
-
-        For ($i = 0; $i -lt $Words.count ; $i++) {
-            if ($i -eq 13) {
-                $j = 0
-            }
-            else {
-                $j = $i
-            }
-
-            $ColorLookup.Add($Words[$i], $Color[$j])
-            $j++
-        }
-
-    }
-
-    Process {
-        $Content | Select-String -List $Words | ForEach-Object {
-            $lineString = $_.ToString()
-
-            $TotalLength = 0
-
-            $lineString.split() | `
-                Where-Object {-not [string]::IsNullOrWhiteSpace($lineString)} | ` #Filter-out whiteSpaces
-                ForEach-Object {
-                if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
-                    #"TotalLength : $TotalLength"
-                    $Token = $_
-                    $displayed = $False
-
-                    Foreach ($Word in $Words) {
-                        if ($Token -like "*$Word*") {
-                            $Before, $after = $Token -Split "$Word"
-
-
-                            #"[$Before][$Word][$After]{$Token}`n"
-
-                            Write-Host $Before -NoNewline ;
-                            Write-Host $Word -NoNewline -Fore Black -Back $ColorLookup[$Word];
-                            Write-Host $after -NoNewline ;
-                            $displayed = $true
-                            #Start-Sleep -Seconds 1
-                            #break
-                        }
-
-                    }
-                    If (-not $displayed) {
-                        Write-Host "$Token " -NoNewline
-                    }
-                    else {
-                        Write-Host " " -NoNewline
-                    }
-                    $TotalLength = $TotalLength + $Token.Length + 1
-                }
-                else {
-                    Write-Host '' #New Line
-                    $TotalLength = 0
-
-                }
-
-                #Start-Sleep -Seconds 0.5
-
-            }
-            Write-Host '' #New Line
-        }
-    }
-
-    end {
-    }
-
-}
-
 
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
 $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBootUpTime).toString('yyyy-MM-dd HH:mm:ss')
@@ -543,8 +360,7 @@ Set-Alias cssh Enter-zxCyberArkSshSession
 Set-Alias which Find-zxExecLocation
 Set-Alias cgit Clone-zxGitRepo
 Set-Alias dgit Download-zxGitRepo
-Set-Alias grep Find-Word
-Set-Alias trace Trace-Word
+Set-Alias scs Select-ColorString
 
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
