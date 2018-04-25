@@ -11,44 +11,52 @@ function Select-ColorString {
 
     .EXAMPLE
 
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString a
+    > 'aa bb cc', 'A line' | Select-ColorString a
 
-    Both line 'aa bb cc a' and line 'A non matching line' are displayed as both contain 'a' case insensitive
-
-    .EXAMPLE
-
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString a -NotMatch
-
-    Only line 'A non matching line' is displayed without highlight color
+    Both line 'aa bb cc' and line 'A line' are displayed as both contain "a" case insensitive
 
     .EXAMPLE
 
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString a -CaseSensitive
+    > 'aa bb cc', 'A line' | Select-ColorString a -NotMatch
 
-    Only line 'aa bb cc a' is displayed with color on all occurrences of 'a' case sensitive
-
-    .EXAMPLE
-
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString \sb
-
-    Only line 'aa bb cc a' is displayed with color on all occurrences of regex '\sb' case insensitive
+    Nothing will be displayed as both lines have "a"
 
     .EXAMPLE
 
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString '(a)|(\sb)' -BackgroundColor White
+    > 'aa bb cc', 'A line' | Select-ColorString a -CaseSensitive
 
-    Only line 'aa bb cc a' is displayed with background color White on all occurrences of regex '(a)|(\sb)' case insensitive
+    Only line 'aa bb cc' is displayed with color on all occurrences of "a" case sensitive
 
     .EXAMPLE
 
-    > 'aa bb cc a', 'A non matching line' | Select-ColorString b -KeepNotMatch
+    > 'aa bb cc', 'A line' | Select-ColorString '(a)|(\sb)' -CaseSensitive -BackgroundColor White
 
-    Both line 'aa bb cc a' and 'A non matching line' are displayed with color on all occurrences of 'b' case insensitive
+    Only line 'aa bb cc' is displayed with background color White on all occurrences of regex '(a)|(\sb)' case sensitive
+
+    .EXAMPLE
+
+    > 'aa bb cc', 'A line' | Select-ColorString b -KeepNotMatch
+
+    Both line 'aa bb cc' and 'A line' are displayed with color on all occurrences of "b" case insensitive,
+    and for lines without the keyword "b", they will be only displayed but without color
+
+    .EXAMPLE
+
+    > Get-Content "C:\Windows\Logs\DISM\dism.log" -Tail 100 | Select-ColorString win
+
+    Find and color the keyword "win" in the last 100 lines of dism.log
+
+    .EXAMPLE
+
+    > Get-WinEvent -FilterHashtable @{logname='System'; StartTime = (Get-Date).AddDays(-1)} | Select-Object time*,level*,message | Select-ColorString win
+
+    Find and color the keyword "win" in the System event log from the last 24 hours
     #>
 
-    [Cmdletbinding()]
+    [Cmdletbinding(DefaultParametersetName = 'Match')]
     Param(
-        [Parameter()]
+        [Parameter(
+            Position = 0)]
         [ValidateNotNullOrEmpty()]
         [String]$Pattern = $(throw "$($MyInvocation.MyCommand.Name) : " `
                 + "Cannot bind null or empty value to the parameter `"Pattern`""),
@@ -110,11 +118,13 @@ function Select-ColorString {
         [Switch]$CaseSensitive = $false,
 
         [Parameter(
+            ParameterSetName = 'NotMatch',
             HelpMessage = "If true, write only not matching lines; " `
                 + "if false, write only matching lines")]
         [Switch]$NotMatch = $false,
 
         [Parameter(
+            ParameterSetName = 'Match',
             HelpMessage = "If true, write all the lines; " `
                 + "if false, write only matching lines")]
         [Switch]$KeepNotMatch = $false
