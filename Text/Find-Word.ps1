@@ -1,5 +1,5 @@
 Function Find-Word {
-    # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
+    # inspired by: https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
     [Cmdletbinding()]
     [Alias("Highlight")]
     Param(
