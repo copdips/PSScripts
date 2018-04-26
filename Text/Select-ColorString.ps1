@@ -41,9 +41,9 @@ function Select-ColorString {
 
     .EXAMPLE
 
-    > Get-Content "C:\Windows\Logs\DISM\dism.log" -Tail 100 | Select-ColorString win
+    > Get-Content "C:\Windows\Logs\DISM\dism.log" -Tail 100 -Wait | Select-ColorString win
 
-    Find and color the keyword "win" in the last 100 lines of dism.log
+    Find and color the keyword "win" in the last ongoing 100 lines of dism.log
 
     .EXAMPLE
 
