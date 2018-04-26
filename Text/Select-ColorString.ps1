@@ -114,19 +114,20 @@ function Select-ColorString {
             })]
         [String]$BackgroundColor = 'Yellow',
 
-        [Switch]$CaseSensitive = $false,
+        [Parameter()]
+        [Switch]$CaseSensitive,
 
         [Parameter(
             ParameterSetName = 'NotMatch',
             HelpMessage = "If true, write only not matching lines; " `
                 + "if false, write only matching lines")]
-        [Switch]$NotMatch = $false,
+        [Switch]$NotMatch,
 
         [Parameter(
             ParameterSetName = 'Match',
             HelpMessage = "If true, write all the lines; " `
                 + "if false, write only matching lines")]
-        [Switch]$KeepNotMatch = $false
+        [Switch]$KeepNotMatch
     )
 
     begin {
