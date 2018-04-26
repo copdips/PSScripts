@@ -3,54 +3,38 @@ Function Trace-Word {
     [Cmdletbinding()]
     [Alias("Highlight")]
     Param(
-        [Parameter(Position = 1)]
+        [Parameter(Position = 0)]
         [ValidateNotNull()]
         [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
 
-        [Parameter(ValueFromPipeline = $true, Position = 0)] [string[]] $Content
+        [Parameter(ValueFromPipeline = $true, Position = 1)]
+        [string[]] $Content
     )
 
     Begin {
-        $Color = @{
-            0  = 'Yellow'
-            1  = 'Magenta'
-            2  = 'Red'
-            3  = 'Cyan'
-            4  = 'Green'
-            5  = 'Blue'
-            6  = 'DarkGray'
-            7  = 'Gray'
-            8  = 'DarkYellow'
-            9  = 'DarkMagenta'
-            10 = 'DarkRed'
-            11 = 'DarkCyan'
-            12 = 'DarkGreen'
-            13 = 'DarkBlue'
-        }
+        # preparing a color lookup table
 
-        $ColorLookup = @{}
+        $Color = [enum]::GetNames([System.ConsoleColor]) | Where-Object {$_ -notin @('White', 'Black')}
+        [array]::Reverse($Color) # personal preference to color with lighter/dull shades at the end
 
-        For ($i = 0; $i -lt $Words.count ; $i++) {
-            if ($i -eq 13) {
-                $j = 0
+        $Counter = 0
+        $ColorLookup = [ordered]@{}
+        foreach ($item in $Words) {
+            $ColorLookup.Add($item, $Color[$Counter])
+            $Counter ++
+            if ($Counter -gt ($Color.Count - 1)) {
+                $Counter = 0
             }
-            else {
-                $j = $i
-            }
-
-            $ColorLookup.Add($Words[$i], $Color[$j])
-            $j++
         }
 
     }
-
     Process {
         $Content | ForEach-Object {
 
             $TotalLength = 0
 
-            $_.split() | `
-                Where-Object {-not [string]::IsNullOrWhiteSpace($_)} | ` #Filter-out whiteSpaces
+            $_.split() |
+                Where-Object {-not [string]::IsNullOrWhiteSpace($_)} |  #Filter-out whiteSpaces
                 ForEach-Object {
                 if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
                     #"TotalLength : $TotalLength"
@@ -61,15 +45,10 @@ Function Trace-Word {
                         if ($Token -like "*$Word*") {
                             $Before, $after = $Token -Split "$Word"
 
-
-                            #"[$Before][$Word][$After]{$Token}`n"
-
                             Write-Host $Before -NoNewline ;
                             Write-Host $Word -NoNewline -Fore Black -Back $ColorLookup[$Word];
                             Write-Host $after -NoNewline ;
                             $displayed = $true
-                            #Start-Sleep -Seconds 1
-                            #break
                         }
 
                     }
@@ -87,14 +66,10 @@ Function Trace-Word {
 
                 }
 
-                #Start-Sleep -Seconds 0.5
-
             }
             Write-Host '' #New Line
         }
     }
-
     end {
     }
-
 }

@@ -18,6 +18,206 @@ Set-PSReadlineOption -EditMode Emacs
 #Python
 $env:VIRTUAL_ENV_DISABLE_PROMPT = '1'
 
+function Select-ColorString {
+
+    [Cmdletbinding(DefaultParametersetName = 'Match')]
+    Param(
+        [Parameter(
+            Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [String]$Pattern = $(throw "$($MyInvocation.MyCommand.Name) : " `
+                + "Cannot bind null or empty value to the parameter `"Pattern`""),
+
+        [Parameter(
+            ValueFromPipeline = $true,
+            HelpMessage = "String or list of string to be checked against the pattern")]
+        [String[]]$Content,
+
+        [Parameter()]
+        [ValidateSet(
+            'Black',
+            'DarkBlue',
+            'DarkGreen',
+            'DarkCyan',
+            'DarkRed',
+            'DarkMagenta',
+            'DarkYellow',
+            'Gray',
+            'DarkGray',
+            'Blue',
+            'Green',
+            'Cyan',
+            'Red',
+            'Magenta',
+            'Yellow',
+            'White')]
+        [String]$ForegroundColor = 'Black',
+
+        [Parameter()]
+        [ValidateSet(
+            'Black',
+            'DarkBlue',
+            'DarkGreen',
+            'DarkCyan',
+            'DarkRed',
+            'DarkMagenta',
+            'DarkYellow',
+            'Gray',
+            'DarkGray',
+            'Blue',
+            'Green',
+            'Cyan',
+            'Red',
+            'Magenta',
+            'Yellow',
+            'White')]
+        [ValidateScript( {
+                if ($Host.ui.RawUI.BackgroundColor -eq $_) {
+                    throw "Current host background color is also set to `"$_`", " `
+                        + "please choose another color for a better readability"
+                }
+                else {
+                    return $true
+                }
+            })]
+        [String]$BackgroundColor = 'Yellow',
+
+        [Switch]$CaseSensitive = $false,
+
+        [Parameter(
+            ParameterSetName = 'NotMatch',
+            HelpMessage = "If true, write only not matching lines; " `
+                + "if false, write only matching lines")]
+        [Switch]$NotMatch = $false,
+
+        [Parameter(
+            ParameterSetName = 'Match',
+            HelpMessage = "If true, write all the lines; " `
+                + "if false, write only matching lines")]
+        [Switch]$KeepNotMatch = $false
+    )
+
+    begin {
+        $paramSelectString = @{
+            Pattern       = $Pattern
+            AllMatches    = $true
+            CaseSensitive = $CaseSensitive
+        }
+        $writeNotMatch = $KeepNotMatch -or $NotMatch
+    }
+
+    process {
+        foreach ($line in $Content) {
+            $matchList = $line | Select-String @paramSelectString
+
+            if (0 -lt $matchList.Count) {
+                if (-not $NotMatch) {
+                    $index = 0
+                    foreach ($myMatch in $matchList.Matches) {
+                        $length = $myMatch.Index - $index
+                        Write-Host $line.Substring($index, $length) -NoNewline
+
+                        $paramWriteHost = @{
+                            Object          = $line.Substring($myMatch.Index, $myMatch.Length)
+                            NoNewline       = $true
+                            ForegroundColor = $ForegroundColor
+                            BackgroundColor = $BackgroundColor
+                        }
+                        Write-Host @paramWriteHost
+
+                        $index = $myMatch.Index + $myMatch.Length
+                    }
+                    Write-Host $line.Substring($index)
+                }
+            }
+            else {
+                if ($writeNotMatch) {
+                    Write-Host "$line"
+                }
+            }
+        }
+    }
+
+    end {
+    }
+}
+
+Function Trace-Word {
+    # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
+    [Cmdletbinding()]
+    [Alias("Highlight")]
+    Param(
+        [Parameter(Position = 0)]
+        [ValidateNotNull()]
+        [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
+
+        [Parameter(ValueFromPipeline = $true, Position = 1)]
+        [string[]] $Content
+    )
+
+    Begin {
+        # preparing a color lookup table
+
+        $Color = [enum]::GetNames([System.ConsoleColor]) | Where-Object {$_ -notin @('White', 'Black')}
+        [array]::Reverse($Color) # personal preference to color with lighter/dull shades at the end
+
+        $Counter = 0
+        $ColorLookup = [ordered]@{}
+        foreach ($item in $Words) {
+            $ColorLookup.Add($item, $Color[$Counter])
+            $Counter ++
+            if ($Counter -gt ($Color.Count - 1)) {
+                $Counter = 0
+            }
+        }
+
+    }
+    Process {
+        $Content | ForEach-Object {
+
+            $TotalLength = 0
+
+            $_.split() |
+                Where-Object {-not [string]::IsNullOrWhiteSpace($_)} |  #Filter-out whiteSpaces
+                ForEach-Object {
+                if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
+                    #"TotalLength : $TotalLength"
+                    $Token = $_
+                    $displayed = $False
+
+                    Foreach ($Word in $Words) {
+                        if ($Token -like "*$Word*") {
+                            $Before, $after = $Token -Split "$Word"
+
+                            Write-Host $Before -NoNewline ;
+                            Write-Host $Word -NoNewline -Fore Black -Back $ColorLookup[$Word];
+                            Write-Host $after -NoNewline ;
+                            $displayed = $true
+                        }
+
+                    }
+                    If (-not $displayed) {
+                        Write-Host "$Token " -NoNewline
+                    }
+                    else {
+                        Write-Host " " -NoNewline
+                    }
+                    $TotalLength = $TotalLength + $Token.Length + 1
+                }
+                else {
+                    Write-Host '' #New Line
+                    $TotalLength = 0
+
+                }
+
+            }
+            Write-Host '' #New Line
+        }
+    }
+    end {
+    }
+}
+
 function Find-zxExecLocation {
     [CmdletBinding()]
     param(
@@ -124,7 +324,7 @@ Function Get-zxGitBranch {
     try {
         $gitBranch = git branch 2>$null
         if ($gitBranch) {
-            return ($gitBranch -split '\*' |  Select-Object -Last 1).Trim()
+            return (( $gitBranch | Select-String '^\*' ) -split '\*' |  Select-Object -Last 1).Trim()
         }
         else {
             return ''
@@ -168,128 +368,6 @@ Function Get-zxPSVersion {
 Function Get-CurrentPath {
     $currentPath = (Get-Location | ForEach-Object Path) -Split '::' | Select-Object -Last 1
     return $currentPath
-}
-
-function Select-ColorString {
-    [Cmdletbinding()]
-    # [Alias('scs')]
-    Param(
-        [Parameter()]
-        [ValidateNotNullOrEmpty()]
-        [String]$Pattern = $(throw "$($MyInvocation.MyCommand.Name) : " `
-                + "Cannot bind null or empty value to the parameter `"Pattern`""),
-
-        [Parameter(
-            ValueFromPipeline = $true,
-            HelpMessage = "String or list of string to be checked against the pattern")]
-        [String[]]$Content,
-
-        [Parameter()]
-        [ValidateSet(
-            'Black',
-            'DarkBlue',
-            'DarkGreen',
-            'DarkCyan',
-            'DarkRed',
-            'DarkMagenta',
-            'DarkYellow',
-            'Gray',
-            'DarkGray',
-            'Blue',
-            'Green',
-            'Cyan',
-            'Red',
-            'Magenta',
-            'Yellow',
-            'White')]
-        [String]$ForegroundColor = 'Black',
-
-        [Parameter()]
-        [ValidateSet(
-            'Black',
-            'DarkBlue',
-            'DarkGreen',
-            'DarkCyan',
-            'DarkRed',
-            'DarkMagenta',
-            'DarkYellow',
-            'Gray',
-            'DarkGray',
-            'Blue',
-            'Green',
-            'Cyan',
-            'Red',
-            'Magenta',
-            'Yellow',
-            'White')]
-        [ValidateScript( {
-                if ($Host.ui.RawUI.BackgroundColor -eq $_) {
-                    throw "Current host background color is also set to `"$_`", " `
-                        + "please choose another color for a better readability"
-                }
-                else {
-                    return $true
-                }
-            })]
-        [String]$BackgroundColor = 'Yellow',
-
-        [Switch]$CaseSensitive = $false,
-
-        [Parameter(
-            HelpMessage = "If true, write only not matching lines; " `
-                + "if false, write only matching lines")]
-        [Switch]$NotMatch = $false,
-
-        [Parameter(
-            HelpMessage = "If true, write all the lines; " `
-                + "if false, write only matching lines")]
-        [Switch]$KeepNotMatch = $false
-    )
-
-    begin {
-    }
-
-    process {
-        foreach ($line in $Content) {
-            $paramSelectString = @{
-                Pattern       = $Pattern
-                AllMatches    = $true
-                CaseSensitive = $CaseSensitive
-            }
-            $matchList = $line | Select-String @paramSelectString
-
-            if (0 -lt $matchList.Count) {
-                if (-not $NotMatch) {
-                    $startIndex = 0
-                    foreach ($myMatch in $matchList.Matches) {
-                        $length = $myMatch.Index - $startIndex
-                        try {
-                            Write-Host $line.Substring($startIndex, $length) -NoNewline
-                        }
-                        catch {
-                        }
-                        $paramWriteHost = @{
-                            Object          = $line.Substring($myMatch.Index, $myMatch.Length)
-                            NoNewline       = $true
-                            ForegroundColor = $ForegroundColor
-                            BackgroundColor = $BackgroundColor
-                        }
-                        Write-Host @paramWriteHost
-                        $startIndex = $myMatch.Index + $myMatch.Length
-                    }
-                    Write-Host $line.Substring($startIndex)
-                }
-            }
-            else {
-                if ($KeepNotMatch -or $NotMatch) {
-                    Write-Host "$line"
-                }
-            }
-        }
-    }
-
-    end {
-    }
 }
 
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
@@ -361,6 +439,7 @@ Set-Alias which Find-zxExecLocation
 Set-Alias cgit Clone-zxGitRepo
 Set-Alias dgit Download-zxGitRepo
 Set-Alias scs Select-ColorString
+Set-Alias trace Trace-Word
 
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
