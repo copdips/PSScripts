@@ -18,10 +18,11 @@ Set-PSReadlineOption -EditMode Emacs
 #Python
 $env:VIRTUAL_ENV_DISABLE_PROMPT = '1'
 
-function Select-ColorString {
+
+function Select-zxColorString {
 
     [Cmdletbinding(DefaultParametersetName = 'Match')]
-    Param(
+    param(
         [Parameter(
             Position = 0)]
         [ValidateNotNullOrEmpty()]
@@ -75,8 +76,7 @@ function Select-ColorString {
                 if ($Host.ui.RawUI.BackgroundColor -eq $_) {
                     throw "Current host background color is also set to `"$_`", " `
                         + "please choose another color for a better readability"
-                }
-                else {
+                } else {
                     return $true
                 }
             })]
@@ -129,8 +129,7 @@ function Select-ColorString {
                     }
                     Write-Host $line.Substring($index)
                 }
-            }
-            else {
+            } else {
                 if ($writeNotMatch) {
                     Write-Host "$line"
                 }
@@ -142,11 +141,12 @@ function Select-ColorString {
     }
 }
 
-Function Trace-Word {
+
+function Trace-zxWord {
     # https://ridicurious.com/2018/03/14/highlight-words-in-powershell-console/
     [Cmdletbinding()]
     [Alias("Highlight")]
-    Param(
+    param(
         [Parameter(Position = 0)]
         [ValidateNotNull()]
         [String[]] $Words = $(throw "Provide word[s] to be highlighted!"),
@@ -155,7 +155,7 @@ Function Trace-Word {
         [string[]] $Content
     )
 
-    Begin {
+    begin {
         # preparing a color lookup table
 
         $Color = [enum]::GetNames([System.ConsoleColor]) | Where-Object {$_ -notin @('White', 'Black')}
@@ -172,7 +172,7 @@ Function Trace-Word {
         }
 
     }
-    Process {
+    process {
         $Content | ForEach-Object {
 
             $TotalLength = 0
@@ -183,7 +183,7 @@ Function Trace-Word {
                 if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
                     #"TotalLength : $TotalLength"
                     $Token = $_
-                    $displayed = $False
+                    $displayed = $false
 
                     Foreach ($Word in $Words) {
                         if ($Token -like "*$Word*") {
@@ -198,13 +198,11 @@ Function Trace-Word {
                     }
                     If (-not $displayed) {
                         Write-Host "$Token " -NoNewline
-                    }
-                    else {
+                    } else {
                         Write-Host " " -NoNewline
                     }
                     $TotalLength = $TotalLength + $Token.Length + 1
-                }
-                else {
+                } else {
                     Write-Host '' #New Line
                     $TotalLength = 0
 
@@ -218,6 +216,7 @@ Function Trace-Word {
     }
 }
 
+
 function Find-zxExecLocation {
     [CmdletBinding()]
     param(
@@ -226,6 +225,7 @@ function Find-zxExecLocation {
 
     $env:Path -split ';' | ForEach-Object {Get-ChildItem $_ $execName -ea 0}
 }
+
 
 function Enter-zxRDPSession {
     [CmdletBinding()]
@@ -238,6 +238,7 @@ function Enter-zxRDPSession {
     $rdpCommand = "mstsc /v $ComputerName /w $Width /h $Hight"
     Invoke-Expression $rdpCommand
 }
+
 
 function Enter-zxPSSession {
     [CmdletBinding()]
@@ -260,6 +261,7 @@ function Enter-zxPSSession {
     Enter-PSSession -Session $psSession
 }
 
+
 function Clone-zxGitRepo {
     [CmdletBinding()]
     param (
@@ -275,11 +277,11 @@ function Clone-zxGitRepo {
         git config --global --unset http.proxy
         git config http.proxy $xiangProxy
         Pop-Location
-    }
-    catch {
+    } catch {
         Write-Host "Failed to clone $gitUrl" -ForegroundColor Red
     }
 }
+
 
 function Enter-zxCyberArkSshSession {
     [CmdletBinding()]
@@ -297,6 +299,7 @@ function Enter-zxCyberArkSshSession {
     Invoke-Expression $sshCommand
 }
 
+
 function Download-zxGitRepo {
     [CmdletBinding()]
     param (
@@ -309,8 +312,7 @@ function Download-zxGitRepo {
 
     try {
         Invoke-WebRequest -Uri $gitZipUrl -OutFile $gitRepoZipName
-    }
-    catch {
+    } catch {
         Write-Host "Failed to download $gitZipUrl" -ForegroundColor Red
     }
 
@@ -320,52 +322,53 @@ function Download-zxGitRepo {
     Rename-Item $gitLocalItem.Name $gitRepoName
     Remove-Item $gitRepoZipName
 }
-Function Get-zxGitBranch {
+
+
+function Get-zxGitBranch {
     try {
         $gitBranch = git branch 2>$null
         if ($gitBranch) {
             return (( $gitBranch | Select-String '^\*' ) -split '\*' |  Select-Object -Last 1).Trim()
-        }
-        else {
+        } else {
             return ''
         }
-    }
-    catch {
+    } catch {
         return ''
     }
 
 }
 
-Function Test-AdminMode {
-    if ([bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).Groups -match 'S-1-5-32-544')) {
-	return $True
-    }
-    else {
-	return $False
+
+function Test-AdminMode {
+    if ( 'S-1-5-32-544' -in [System.Security.Principal.WindowsIdentity]::GetCurrent().Groups.Value ) {
+        return $true
+    } else {
+        return $false
     }
 }
 
-Function Test-DebugMode {
+
+function Test-DebugMode {
     if (Test-Path -Path Variable:/PSDebugContext) {
-	return $True
-    }
-    else {
-	return $False
+        return $true
+    } else {
+        return $false
     }
 }
 
-Function Get-zxPSVersion {
+
+function Get-zxPSVersion {
     $psVersionObject = $psVersionTable.PSVersion
     if ($psVersionObject.Major -lt 6) {
         $psVersion = "$($psVersionObject.Major).$($psVersionObject.Minor)"
-    }
-    elseIf ($psVersionObject.Major -ge 6) {
-	$psVersion = "$($psVersionObject.Major).$($psVersionObject.Minor).$($psVersionObject.Patch)"
+    } elseIf ($psVersionObject.Major -ge 6) {
+        $psVersion = "$($psVersionObject.Major).$($psVersionObject.Minor).$($psVersionObject.Patch)"
     }
     return $psVersion
 }
 
-Function Get-CurrentPath {
+
+function Get-CurrentPath {
     $currentPath = (Get-Location | ForEach-Object Path) -Split '::' | Select-Object -Last 1
     return $currentPath
 }
@@ -375,29 +378,30 @@ $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBo
 Write-Host "$osVersion" -ForegroundColor Magenta
 Write-Host "Last Reboot: $lastRebootTime" -ForegroundColor Magenta
 
-Function Prompt() {
+
+function Prompt() {
     $now = (Get-Date).toString("HH:mm:ss")
     $gitBranch = Get-zxGitBranch
     $psVersion = Get-zxPSVersion
     $path = Get-CurrentPath
     $pythonVenvPath = $env:VIRTUAL_ENV
+    $currentSecurityContextUserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
     Write-Host
     Write-Host "$now" -ForegroundColor Cyan -NoNewline
 
     if (Test-DebugMode) {
-	Write-Host ' ' -NoNewline
-	Write-Host '[DBG]' -ForegroundColor Black -BackgroundColor Yellow -NoNewline
+        Write-Host ' ' -NoNewline
+        Write-Host '[DBG]' -ForegroundColor Black -BackgroundColor Yellow -NoNewline
     }
 
     if (Test-AdminMode) {
-	Write-Host ' [admin]' -ForegroundColor Red -NoNewline
-    }
-    else {
-	Write-Host ' [user]' -ForegroundColor DarkGray -NoNewline
+        Write-Host ' [admin]' -ForegroundColor Red -NoNewline
+    } else {
+        Write-Host ' [user]' -ForegroundColor DarkGray -NoNewline
     }
 
-    Write-Host " $($env:USERNAME) @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
+    Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
     Write-Host $path -ForegroundColor Green -NoNewline
     Write-Host " [" -ForegroundColor Yellow -NoNewline
     Write-Host "$gitBranch" -ForegroundColor Cyan -NoNewline
@@ -438,8 +442,8 @@ Set-Alias cssh Enter-zxCyberArkSshSession
 Set-Alias which Find-zxExecLocation
 Set-Alias cgit Clone-zxGitRepo
 Set-Alias dgit Download-zxGitRepo
-Set-Alias scs Select-ColorString
-Set-Alias trace Trace-Word
+Set-Alias scs Select-zxColorString
+Set-Alias tw Trace-zxWord
 
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
