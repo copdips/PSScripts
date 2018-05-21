@@ -1,3 +1,4 @@
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 $xiangProxy = ''
 $env:PIP_PROXY = $xiangProxy
@@ -408,7 +409,9 @@ function Prompt() {
     Write-Host "]" -ForegroundColor Yellow
 
     if ($pythonVenvPath) {
-        Write-Host "venv: $pythonVenvPath" -ForegroundColor DarkGray
+        Write-Host "venv:" -ForegroundColor Cyan -NoNewline
+        Write-Host " $pythonVenvPath" -ForegroundColor DarkGray
+
     }
 
     if ($PSSenderInfo) {
