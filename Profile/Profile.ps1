@@ -379,8 +379,9 @@ $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBo
 Write-Host "$osVersion" -ForegroundColor Magenta
 Write-Host "Last Reboot: $lastRebootTime" -ForegroundColor Magenta
 
+$function:simpleprompt = {Write-Host "PS>" -ForegroundColor Cyan -NoNewline ; return ' '}
 
-function Prompt() {
+$function:fullprompt = {
     $now = (Get-Date).toString("HH:mm:ss")
     $gitBranch = Get-zxGitBranch
     $psVersion = Get-zxPSVersion
@@ -428,6 +429,8 @@ function Prompt() {
     }
 
 }
+
+$function:prompt = $function:fullprompt
 
 Set-Alias gh Get-Help
 Set-Alias wh Write-Host
