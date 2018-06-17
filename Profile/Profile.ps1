@@ -1,4 +1,21 @@
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+add-type @"
+	using System.Net;
+	using System.Security.Cryptography.X509Certificates;
+	public class TrustAllCertsPolicy : ICertificatePolicy {
+		public bool CheckValidationResult(
+			ServicePoint srvPoint, X509Certificate certificate,
+			WebRequest request, int certificateProblem) {
+				return true;
+			}
+	}
+"@
+
+#$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+$AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
+[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPol
+
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 $xiangProxy = ''
 $env:PIP_PROXY = $xiangProxy
@@ -455,5 +472,7 @@ Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
 Set-Alias py python
+Set-Alias ptpy ptpython
+
 
 $xiangGit = 'D:\xiang\git\'
