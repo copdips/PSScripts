@@ -292,11 +292,12 @@ function Clone-zxGitRepo {
         git clone $gitUrl
         Push-Location
         Set-Location ./$gitRepoName
-        git config --global --unset http.proxy
         git config http.proxy $xiangProxy
         Pop-Location
     } catch {
         Write-Host "Failed to clone $gitUrl" -ForegroundColor Red
+    } finally {
+        git config --global --unset http.proxy
     }
 }
 
