@@ -1,24 +1,24 @@
-#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-add-type @"
-	using System.Net;
-	using System.Security.Cryptography.X509Certificates;
-	public class TrustAllCertsPolicy : ICertificatePolicy {
-		public bool CheckValidationResult(
-			ServicePoint srvPoint, X509Certificate certificate,
-			WebRequest request, int certificateProblem) {
-				return true;
-			}
-	}
-"@
-
-#$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
-$AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
-[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPol
-
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 $xiangProxy = ''
 $env:PIP_PROXY = $xiangProxy
+
+$typeIgnoreSslError = @"
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+public class TrustAllCertsPolicy : ICertificatePolicy {
+    public bool CheckValidationResult(
+        ServicePoint srvPoint, X509Certificate certificate,
+        WebRequest request, int certificateProblem) {
+            return true;
+        }
+	}
+"@
+
+#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+#$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+$AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
+[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+
 
 # Restore Powershell $env:PSModulePath when enter into Powershell from Pwsh
 if ($PSVersionTable.PSVersion.Major -lt 6) {
@@ -27,6 +27,8 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     [System.Collections.ArrayList]$newPSModulePathArrayList = $newPSModulePath -split ';'
     $newPSModulePathArrayList.Insert(2, 'C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules')
     $env:PSModulePath = ($newPSModulePathArrayList | Select-Object -Unique) -join ';'
+    Add-Type -TypeDefinition $typeIgnoreSslError
+    [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 } else {
     Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\NetTCPIP\NetTCPIP.psd1 -Force
 }
