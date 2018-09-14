@@ -1,3 +1,5 @@
+Set-Variable -Name PSProfilePath -Value $PSCommandPath -Option Constant
+
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 $xiangProxy = ''
 $env:PIP_PROXY = $xiangProxy
@@ -359,6 +361,10 @@ function Get-zxGitBranch {
 
 }
 
+function Test-InPSSession {
+    return $PSSenderInfo
+}
+
 
 function Test-AdminMode {
     if ( 'S-1-5-32-544' -in [System.Security.Principal.WindowsIdentity]::GetCurrent().Groups.Value ) {
@@ -394,6 +400,7 @@ function Get-CurrentPath {
     return $currentPath
 }
 
+
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
 $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBootUpTime).toString('yyyy-MM-dd HH:mm:ss')
 Write-Host "$osVersion" -ForegroundColor Magenta
@@ -406,6 +413,7 @@ $function:fullprompt = {
     $gitBranch = Get-zxGitBranch
     $psVersion = Get-zxPSVersion
     $path = Get-CurrentPath
+    $inPSSession = Test-InPSSession
     $pythonVenvPath = $env:VIRTUAL_ENV
     $currentSecurityContextUserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
@@ -423,7 +431,11 @@ $function:fullprompt = {
         Write-Host ' [user]' -ForegroundColor DarkGray -NoNewline
     }
 
-    Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
+    if ($inPSSession) {
+        Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor White -BackgroundColor DarkBlue -NoNewline
+    } else {
+        Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
+    }
     Write-Host $path -ForegroundColor Green -NoNewline
     Write-Host " [" -ForegroundColor Yellow -NoNewline
     Write-Host "$gitBranch" -ForegroundColor Cyan -NoNewline
