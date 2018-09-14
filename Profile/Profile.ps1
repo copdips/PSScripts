@@ -486,7 +486,6 @@ Set-Alias tw Trace-zxWord
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
-Set-Alias py python
 Set-Alias ptpy ptpython
 
 
