@@ -30,7 +30,7 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     Add-Type -TypeDefinition $typeIgnoreSslError
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 } else {
-    Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\NetTCPIP\NetTCPIP.psd1 -Force
+    Import-Module C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules\NetTCPIP\NetTCPIP.psd1 -Force -SkipEditionCheck
 }
 
 Set-PSReadlineOption -EditMode Emacs
