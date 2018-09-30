@@ -401,6 +401,17 @@ function Get-CurrentPath {
 }
 
 
+function Test-LocalSession {
+    if ($PSSenderInfo) {
+      return $false
+    }
+    if (($env:TERM -match '^xterm') -and ($env:SSH_CONNECTION -ne $null)) {
+      return $false
+    }
+    return $true
+}
+
+
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
 $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBootUpTime).toString('yyyy-MM-dd HH:mm:ss')
 Write-Host "$osVersion" -ForegroundColor Magenta
@@ -447,17 +458,17 @@ $function:fullprompt = {
 
     }
 
-    if ($PSSenderInfo) {
+    if (Test-LocalSession) {
+        # in local session
+        Write-Host "$psVersion>" -ForegroundColor Cyan -NoNewline
+        return ' '
+    } else {
         # in PS remote session
         $backspaces = "`b" * ($zxPsComputerNameLength + 4)
         $lastPrompt = "$psVersion remote>"
         $remaningChars = [Math]::Max( ($zxPsComputerNameLength + 4) - $lastPrompt.Length, 0 )
         $tail = (" " * $remaningChars) + ("`b" * $remaningChars)
         return "${backspaces}${lastPrompt}${tail}"
-    } else {
-        # in local session
-        Write-Host "$psVersion>" -ForegroundColor Cyan -NoNewline
-        return ' '
     }
 
 }
