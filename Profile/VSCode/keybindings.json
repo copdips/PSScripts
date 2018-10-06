@@ -1,11 +1,11 @@
 // Place your key bindings in this file to overwrite the defaults
 [
     {
-        "key": "alt+right",
+        "key": "ctrl+alt+right",
         "command": "workbench.action.terminal.focusNext"
     },
     {
-        "key": "alt+left",
+        "key": "ctrl+alt+left",
         "command": "workbench.action.terminal.focusPrevious"
     },
     {
@@ -45,10 +45,6 @@
         "command": "workbench.action.terminal.focus"
     },
     {
-        "key": "f2",
-        "command": "workbench.action.terminal.rename"
-    },
-    {
         "key": "alt+`",
         "command": "workbench.action.terminal.toggleTerminal"
     },
@@ -57,7 +53,7 @@
         "command": "-workbench.action.terminal.toggleTerminal"
     },
     {
-        "key": "ctrl+alt+`",
+        "key": "shift+alt+x",
         "command": "workbench.action.terminal.kill"
     },
     {
@@ -107,7 +103,7 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "alt+v",
+        "key": "alt+x",
         "command": "toggleVim"
     },
     {
@@ -153,5 +149,15 @@
     {
         "key": "ctrl+e",
         "command": "-workbench.action.quickOpen"
+    },
+    {
+        "key": "shift+alt+right",
+        "command": "workbench.action.terminal.split",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+5",
+        "command": "-workbench.action.terminal.split",
+        "when": "terminalFocus"
     }
 ]
