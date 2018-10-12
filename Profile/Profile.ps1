@@ -1,5 +1,9 @@
 Set-Variable -Name PSProfilePath -Value $PSCommandPath -Option Constant
 
+$fakeAdministratorPassword = "Password1" | ConvertTo-SecureString -asPlainText -Force
+$fakeAdministratorName = "administrator"
+$credFakeAdministrator = New-Object System.Management.Automation.PSCredential($fakeAdministratorName, $fakeAdministratorPassword)
+
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
 $xiangProxy = ''
 $env:PIP_PROXY = $xiangProxy
@@ -264,13 +268,22 @@ function Enter-zxPSSession {
     [CmdletBinding()]
     param (
         [String]$ComputerName,
+        [Switch]$UseFakeAdministratorCredential,
         [Switch]$UseSSL
     )
 
-    if ($UseSSL) {
-        $psSession = New-PSSession $ComputerName -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck)
+    if ($UseFakeAdministratorCredential) {
+        if ($UseSSL) {
+            $psSession = New-PSSession $ComputerName -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck) -Credential $credFakeAdministrator
+        } else {
+            $psSession = New-PSSession $ComputerName -Credential $credFakeAdministrator
+        }
     } else {
-        $psSession = New-PSSession $ComputerName
+        if ($UseSSL) {
+            $psSession = New-PSSession $ComputerName -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck)
+        } else {
+            $psSession = New-PSSession $ComputerName
+        }
     }
 
     if (-not $psProfileScriptBlock) {
