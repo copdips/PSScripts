@@ -263,10 +263,15 @@ function Enter-zxRDPSession {
 function Enter-zxPSSession {
     [CmdletBinding()]
     param (
-        [String]$ComputerName
+        [String]$ComputerName,
+        [Switch]$UseSSL
     )
 
-    $psSession = New-PSSession $ComputerName
+    if ($UseSSL) {
+        $psSession = New-PSSession $ComputerName -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck)
+    } else {
+        $psSession = New-PSSession $ComputerName
+    }
 
     if (-not $psProfileScriptBlock) {
         $psProfile = $profile | ForEach-Object CurrentUserAllHosts
@@ -279,6 +284,7 @@ function Enter-zxPSSession {
     }
     Invoke-Command -Session $psSession -ScriptBlock $psProfileScriptBlock
     Enter-PSSession -Session $psSession
+
 }
 
 
