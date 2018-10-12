@@ -378,11 +378,6 @@ function Get-zxGitBranch {
 
 }
 
-function Test-InPSSession {
-    return $PSSenderInfo
-}
-
-
 function Test-AdminMode {
     if ( 'S-1-5-32-544' -in [System.Security.Principal.WindowsIdentity]::GetCurrent().Groups.Value ) {
         return $true
@@ -441,7 +436,7 @@ $function:fullprompt = {
     $gitBranch = Get-zxGitBranch
     $psVersion = Get-zxPSVersion
     $path = Get-CurrentPath
-    $inPSSession = Test-InPSSession
+    $isInLocalSession = Test-LocalSession
     $pythonVenvPath = $env:VIRTUAL_ENV
     $currentSecurityContextUserName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 
@@ -454,17 +449,17 @@ $function:fullprompt = {
     }
 
     if (Test-AdminMode) {
-        Write-Host ' [admin]' -ForegroundColor Red -NoNewline
+        Write-Host ' [admin] ' -ForegroundColor Red -NoNewline
     } else {
-        Write-Host ' [user]' -ForegroundColor DarkGray -NoNewline
+        Write-Host ' [user] ' -ForegroundColor DarkGray -NoNewline
     }
 
-    if ($inPSSession) {
-        Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor White -BackgroundColor DarkBlue -NoNewline
+    if ($isInLocalSession) {
+        Write-Host "$currentSecurityContextUserName @ $($env:COMPUTERNAME)" -ForegroundColor Magenta -NoNewline
     } else {
-        Write-Host " $currentSecurityContextUserName @ $($env:COMPUTERNAME) " -ForegroundColor Magenta -NoNewline
+        Write-Host "$currentSecurityContextUserName @ $($env:COMPUTERNAME)" -ForegroundColor White -BackgroundColor DarkBlue -NoNewline
     }
-    Write-Host $path -ForegroundColor Green -NoNewline
+    Write-Host " $path" -ForegroundColor Green -NoNewline
     Write-Host " [" -ForegroundColor Yellow -NoNewline
     Write-Host "$gitBranch" -ForegroundColor Cyan -NoNewline
     Write-Host "]" -ForegroundColor Yellow
@@ -475,7 +470,7 @@ $function:fullprompt = {
 
     }
 
-    if (Test-LocalSession) {
+    if ($isInLocalSession) {
         # in local session
         Write-Host "$psVersion>" -ForegroundColor Cyan -NoNewline
         return ' '
