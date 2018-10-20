@@ -25,6 +25,9 @@ public class TrustAllCertsPolicy : ICertificatePolicy {
 $AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 
+# PsReadline has an startup issue with non ennglish keyboard.
+# https://github.com/lzybkr/PSReadLine/issues/614
+powershell Set-WinUserLanguageList -LanguageList en-us -Force
 
 # Restore Powershell $env:PSModulePath when enter into Powershell from Pwsh
 if ($PSVersionTable.PSVersion.Major -lt 6) {
