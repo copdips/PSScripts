@@ -27,7 +27,7 @@ $AllProtocols = [System.Net.SecurityProtocolType]'Tls12'
 
 # PsReadline has an startup issue with non ennglish keyboard.
 # https://github.com/lzybkr/PSReadLine/issues/614
-powershell Set-WinUserLanguageList -LanguageList en-us -Force
+# Start-Job { {powershell Set-WinUserLanguageList -LanguageList en-us -Force} }
 
 # Restore Powershell $env:PSModulePath when enter into Powershell from Pwsh
 if ($PSVersionTable.PSVersion.Major -lt 6) {
@@ -513,6 +513,7 @@ Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
 Set-Alias ptpy ptpython
+Set-Alias ipy ipython
 
 
-$xiangGit = 'D:\xiang\git\'
+$xzGit = 'D:\xiang\git\'
