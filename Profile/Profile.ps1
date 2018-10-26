@@ -436,7 +436,8 @@ $function:simpleprompt = {Write-Host "PS>" -ForegroundColor Cyan -NoNewline ; re
 
 $function:fullprompt = {
     $now = (Get-Date).toString("HH:mm:ss")
-    $gitBranch = Get-zxGitBranch
+    # $gitBranch = Get-zxGitBranch
+    Set-Variable -Name gitBranch -Value (Get-zxGitBranch) -Scope Script
     $psVersion = Get-zxPSVersion
     $path = Get-CurrentPath
     $isInLocalSession = Test-LocalSession
