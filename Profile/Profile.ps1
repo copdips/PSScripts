@@ -5,8 +5,8 @@ $fakeAdministratorName = "administrator"
 $credFakeAdministrator = New-Object System.Management.Automation.PSCredential($fakeAdministratorName, $fakeAdministratorPassword)
 
 (New-Object -TypeName System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
-$xiangProxy = ''
-$env:PIP_PROXY = $xiangProxy
+$xzProxy = ''
+$env:PIP_PROXY = $xzProxy
 
 $typeIgnoreSslError = @"
 using System.Net;
@@ -44,6 +44,18 @@ Set-PSReadlineOption -EditMode Emacs
 
 #Python
 $env:VIRTUAL_ENV_DISABLE_PROMPT = '1'
+
+
+function Enable-Proxy {
+    # https://github.com/PowerShell/PowerShell/issues/3112
+    $PSDefaultParameterValues["invoke-webrequest:proxy"] = $xzProxy
+}
+
+
+function Disable-Proxy {
+    # https://github.com/PowerShell/PowerShell/issues/3112
+    $PSDefaultParameterValues["invoke-webrequest:proxy"] = ""
+}
 
 
 function Select-zxColorString {
@@ -312,11 +324,11 @@ function Clone-zxGitRepo {
 
     try {
         $gitRepoName = (Split-Path $gitUrl -Leaf) -replace '.git$', ''
-        git config --global http.proxy $xiangProxy
+        git config --global http.proxy $xzProxy
         git clone $gitUrl
         Push-Location
         Set-Location ./$gitRepoName
-        git config http.proxy $xiangProxy
+        git config http.proxy $xzProxy
         Pop-Location
     } catch {
         Write-Host "Failed to clone $gitUrl" -ForegroundColor Red
