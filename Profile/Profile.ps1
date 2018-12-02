@@ -38,6 +38,14 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
     $env:PSModulePath = ($newPSModulePathArrayList | Select-Object -Unique) -join ';'
     Add-Type -TypeDefinition $typeIgnoreSslError
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+} else {
+    $moduleWindowsCompatibility = Get-Module WindowsCompatibility -ListAvailable
+    if (-not $moduleWindowsCompatibility) {
+        Write-Host "Module WindowsCompatibility is not installed, please install it under admin with Install-Module WindowsCompatibility."
+        Write-Host "Refer to :https://blogs.msdn.microsoft.com/powershell/2018/11/15/announcing-general-availability-of-the-windows-compatibility-module-1-0-0/"
+    } else {
+      Import-Module WindowsCompatibility
+    }
 }
 
 Set-PSReadlineOption -EditMode Emacs
