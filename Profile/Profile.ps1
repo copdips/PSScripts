@@ -548,6 +548,11 @@ function Test-LocalSession {
 }
 
 
+function Enable-Venv {
+    Invoke-Expression "./venv/Scripts/activate.ps1"
+}
+
+
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
 $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBootUpTime).toString('yyyy-MM-dd HH:mm:ss')
 Write-Host "$osVersion" -ForegroundColor Magenta
@@ -636,6 +641,8 @@ Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
 Set-Alias ptpy ptpython
 Set-Alias ipy ipython
+Set-Alias venv Enable-Venv
+
 
 
 $xzGit = 'D:\xiang\git\'
