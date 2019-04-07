@@ -626,6 +626,7 @@ Set-Alias ep Enter-PSSession
 Set-Alias fromjson ConvertFrom-Json
 Set-Alias tojson ConvertTo-Json
 Set-Alias tnc Test-NetConnection
+Set-Alias html Out-HtmlView
 
 Set-Alias go Enter-zxPSSession
 Set-Alias rdp Enter-zxRDPSession
