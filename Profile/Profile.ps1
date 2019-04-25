@@ -553,6 +553,11 @@ function Enable-Venv {
 }
 
 
+function Update-Pip {
+    Invoke-Expression "python -m pip install --upgrade pip"
+}
+
+
 $osVersion = Get-CimInstance Win32_OperatingSystem | ForEach-Object Caption
 $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBootUpTime).toString('yyyy-MM-dd HH:mm:ss')
 Write-Host "$osVersion" -ForegroundColor Magenta
@@ -643,6 +648,7 @@ Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
 Set-Alias ptpy ptpython
 Set-Alias ipy ipython
 Set-Alias venv Enable-Venv
+Set-Alias upip Update-Pip
 
 
 
