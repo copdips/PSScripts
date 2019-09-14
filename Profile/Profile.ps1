@@ -44,7 +44,7 @@ if ($PSVersionTable.PSVersion.Major -lt 6) {
         Write-Host "Module WindowsCompatibility is not installed, please install it under admin with Install-Module WindowsCompatibility."
         Write-Host "Refer to :https://blogs.msdn.microsoft.com/powershell/2018/11/15/announcing-general-availability-of-the-windows-compatibility-module-1-0-0/"
     } else {
-      Import-Module WindowsCompatibility
+        Import-Module WindowsCompatibility
     }
 }
 
@@ -182,8 +182,7 @@ function Select-zxColorString {
                 if ($Host.ui.RawUI.BackgroundColor -eq $_) {
                     throw "Current host background color is also set to `"$_`", " `
                         + "please choose another color for a better readability"
-                }
-                else {
+                } else {
                     return $true
                 }
             })]
@@ -218,7 +217,7 @@ function Select-zxColorString {
         }
         $writeNotMatch = $KeepNotMatch -or $NotMatch
 
-        [System.Collections.ArrayList]$colorList =  [System.Enum]::GetValues([System.ConsoleColor])
+        [System.Collections.ArrayList]$colorList = [System.Enum]::GetValues([System.ConsoleColor])
         $currentBackgroundColor = $Host.ui.RawUI.BackgroundColor
         $colorList.Remove($currentBackgroundColor.ToString())
         $colorList.Remove($ForegroundColor)
@@ -228,7 +227,7 @@ function Select-zxColorString {
         if ($MultiColorsForSimplePattern) {
             # Get all the console foreground and background colors mapping display effet:
             # https://gist.github.com/timabell/cc9ca76964b59b2a54e91bda3665499e
-            $patternToColorMapping = [Ordered]@{}
+            $patternToColorMapping = [Ordered]@{ }
             # Available only if the pattern is a simple non-regex string separated by '|', use this with fast CPU.
             # We dont support regex as -Pattern for this switch as it will need much more CPU.
             # This switch is useful when you need to search some words,
@@ -241,7 +240,7 @@ function Select-zxColorString {
                     + "which is $colorCount, so rotation color list will be used." `
                     -ForegroundColor Yellow
             }
-            0..($expectedMatchesCount -1) | % {
+            0..($expectedMatchesCount - 1) | % {
                 $patternToColorMapping.($expectedMatches[$_]) = $colorList[$_ % $colorCount]
             }
 
@@ -276,8 +275,7 @@ function Select-zxColorString {
                     }
                     Write-Host $line.Substring($index)
                 }
-            }
-            else {
+            } else {
                 if ($writeNotMatch) {
                     Write-Host "$line"
                 }
@@ -286,6 +284,63 @@ function Select-zxColorString {
     }
 
     end {
+    }
+}
+
+
+function Test-zxPort {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline = $true, HelpMessage = 'Could be suffixed by :Port')]
+        [String[]]$ComputerName,
+
+        [Parameter(HelpMessage = 'Will be ignored if the port is given in the param ComputerName')]
+        [Int]$Port = 5985,
+
+        [Parameter(HelpMessage = 'Timeout in millisecond. Increase the value if you want to test Internet resources.')]
+        [Int]$Timeout = 1000
+    )
+
+    begin {
+        $result = [System.Collections.ArrayList]::new()
+    }
+
+    process {
+        foreach ($originalComputerName in $ComputerName) {
+            $remoteInfo = $originalComputerName.Split(":")
+            if ($remoteInfo.count -eq 1) {
+                # In case $ComputerName in the form of 'host'
+                $remoteHostname = $originalComputerName
+                $remotePort = $Port
+            } elseif ($remoteInfo.count -eq 2) {
+                # In case $ComputerName in the form of 'host:port',
+                # we often get host and port to check in this form.
+                $remoteHostname = $remoteInfo[0]
+                $remotePort = $remoteInfo[1]
+            } else {
+                $msg = "Got unknown format for the parameter ComputerName: " `
+                    + "[$originalComputerName]. " `
+                    + "The allowed formats is [hostname] or [hostname:port]."
+                Write-Error $msg
+                return
+            }
+
+            $tcpClient = New-Object System.Net.Sockets.TcpClient
+            $portOpened = $tcpClient.ConnectAsync($remoteHostname, $remotePort).Wait($Timeout)
+
+            $null = $result.Add([PSCustomObject]@{
+                RemoteHostname       = $remoteHostname
+                RemotePort           = $remotePort
+                PortOpened           = $portOpened
+                TimeoutInMillisecond = $Timeout
+                SourceHostname       = $env:COMPUTERNAME
+                OriginalComputerName = $originalComputerName
+                })
+        }
+    }
+
+    end {
+        return $result
     }
 }
 
@@ -306,11 +361,11 @@ function Trace-zxWord {
     begin {
         # preparing a color lookup table
 
-        $Color = [enum]::GetNames([System.ConsoleColor]) | Where-Object {$_ -notin @('White', 'Black')}
+        $Color = [enum]::GetNames([System.ConsoleColor]) | Where-Object { $_ -notin @('White', 'Black') }
         [array]::Reverse($Color) # personal preference to color with lighter/dull shades at the end
 
         $Counter = 0
-        $ColorLookup = [ordered]@{}
+        $ColorLookup = [ordered]@{ }
         foreach ($item in $Words) {
             $ColorLookup.Add($item, $Color[$Counter])
             $Counter ++
@@ -326,8 +381,8 @@ function Trace-zxWord {
             $TotalLength = 0
 
             $_.split() |
-                Where-Object {-not [string]::IsNullOrWhiteSpace($_)} |  #Filter-out whiteSpaces
-                ForEach-Object {
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | #Filter-out whiteSpaces
+            ForEach-Object {
                 if ($TotalLength -lt ($Host.ui.RawUI.BufferSize.Width - 10)) {
                     #"TotalLength : $TotalLength"
                     $Token = $_
@@ -371,7 +426,7 @@ function Find-zxExecLocation {
         [string]$execName
     )
 
-    $env:Path -split ';' | ForEach-Object {Get-ChildItem $_ $execName -ea 0}
+    $env:Path -split ';' | ForEach-Object { Get-ChildItem $_ $execName -ea 0 }
 }
 
 
@@ -492,7 +547,7 @@ function Get-zxGitBranch {
     try {
         $gitBranch = git branch 2>$null
         if ($gitBranch) {
-            return (( $gitBranch | Select-String '^\*' ) -split '\*' |  Select-Object -Last 1).Trim()
+            return (( $gitBranch | Select-String '^\*' ) -split '\*' | Select-Object -Last 1).Trim()
         } else {
             return ''
         }
@@ -539,10 +594,10 @@ function Get-CurrentPath {
 
 function Test-LocalSession {
     if ($PSSenderInfo) {
-      return $false
+        return $false
     }
     if (($env:TERM -match '^xterm') -and ($env:SSH_CONNECTION -ne $null)) {
-      return $false
+        return $false
     }
     return $true
 }
@@ -563,7 +618,7 @@ $lastRebootTime = (Get-CimInstance Win32_OperatingSystem | ForEach-Object LastBo
 Write-Host "$osVersion" -ForegroundColor Magenta
 Write-Host "Last Reboot: $lastRebootTime" -ForegroundColor Magenta
 
-$function:simpleprompt = {Write-Host "PS>" -ForegroundColor Cyan -NoNewline ; return ' '}
+$function:simpleprompt = { Write-Host "PS>" -ForegroundColor Cyan -NoNewline ; return ' ' }
 
 $function:fullprompt = {
     $now = (Get-Date).toString("HH:mm:ss")
@@ -641,6 +696,7 @@ Set-Alias cgit Clone-zxGitRepo
 Set-Alias dgit Download-zxGitRepo
 Set-Alias scs Select-zxColorString
 Set-Alias tw Trace-zxWord
+Set-Alias tp Test-zxPort
 
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
