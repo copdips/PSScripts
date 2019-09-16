@@ -603,6 +603,11 @@ function Test-LocalSession {
 }
 
 
+function Get-zxPythonVersion {
+    return (python --version).Split()[1]
+}
+
+
 function Enable-Venv {
     Invoke-Expression "./venv/Scripts/activate.ps1"
 }
@@ -625,6 +630,7 @@ $function:fullprompt = {
     # $gitBranch = Get-zxGitBranch
     Set-Variable -Name gitBranch -Value (Get-zxGitBranch) -Scope Script
     $psVersion = Get-zxPSVersion
+    $pyVersion = Get-zxPythonVersion
     $path = Get-CurrentPath
     $isInLocalSession = Test-LocalSession
     $pythonVenvPath = $env:VIRTUAL_ENV
@@ -662,7 +668,7 @@ $function:fullprompt = {
 
     if ($isInLocalSession) {
         # in local session
-        Write-Host "$psVersion>" -ForegroundColor Cyan -NoNewline
+        Write-Host "ps.$psVersion | py.$pyVersion>" -ForegroundColor Cyan -NoNewline
         return ' '
     } else {
         # in PS remote session
@@ -701,7 +707,7 @@ Set-Alias tp Test-zxPort
 Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
 Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
-Set-Alias ptpy ptpython
+Set-Alias py python
 Set-Alias ipy ipython
 Set-Alias venv Enable-Venv
 Set-Alias upip Update-Pip
