@@ -331,10 +331,10 @@ function Test-zxPort {
             $null = $result.Add([PSCustomObject]@{
                 RemoteHostname       = $remoteHostname
                 RemotePort           = $remotePort
-                PortOpened           = $portOpened
                 TimeoutInMillisecond = $Timeout
                 SourceHostname       = $env:COMPUTERNAME
                 OriginalComputerName = $originalComputerName
+                PortOpened           = $portOpened
                 })
         }
     }
@@ -704,9 +704,6 @@ Set-Alias scs Select-zxColorString
 Set-Alias tw Trace-zxWord
 Set-Alias tp Test-zxPort
 
-Set-Alias vi D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
-Set-Alias vim D:\xiang\Dropbox\tools\system\vim80-586rt\vim\vim80\vim.exe
-Set-Alias putty D:\xiang\Dropbox\tools\network\Putty\putty.exe
 Set-Alias py python
 Set-Alias ipy ipython
 Set-Alias venv Enable-Venv
