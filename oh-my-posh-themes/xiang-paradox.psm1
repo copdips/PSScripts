@@ -11,7 +11,8 @@ function Write-Theme {
     $psVersion = Get-zxPSVersion
     $pyVersion = Get-zxPythonVersion
     $lastColor = $sl.Colors.PromptBackgroundColor
-    $prompt = Write-Prompt -Object $sl.PromptSymbols.StartSymbol -ForegroundColor $sl.Colors.PromptForegroundColor -BackgroundColor $sl.Colors.SessionInfoBackgroundColor
+    $prompt = Set-Newline
+    $prompt += Write-Prompt -Object $sl.PromptSymbols.StartSymbol -ForegroundColor $sl.Colors.PromptForegroundColor -BackgroundColor $sl.Colors.SessionInfoBackgroundColor
 
     #check the last command state and indicate if failed
     If ($lastCommandFailed) {
