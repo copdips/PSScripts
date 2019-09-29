@@ -1,5 +1,8 @@
 Set-Variable -Name PSProfilePath -Value $PSCommandPath -Option Constant
 
+# https://github.com/PowerShell/Win32-OpenSSH/wiki/TTY-PTY-support-in-Windows-OpenSSH
+$env:TERM = 'xterm'
+
 $fakeAdministratorPassword = "Password1" | ConvertTo-SecureString -asPlainText -Force
 $fakeAdministratorName = "administrator"
 $credFakeAdministrator = New-Object System.Management.Automation.PSCredential($fakeAdministratorName, $fakeAdministratorPassword)
