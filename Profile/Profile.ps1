@@ -711,4 +711,4 @@ Set-Alias upip Update-Pip
 
 $xzGit = 'D:\xiang\git\'
 Set-Location $xzGit
-Set-Theme Paradox
+Set-Theme xiang-paradox
