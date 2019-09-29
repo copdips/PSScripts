@@ -709,6 +709,6 @@ Set-Alias ipy ipython
 Set-Alias venv Enable-Venv
 Set-Alias upip Update-Pip
 
-
-
 $xzGit = 'D:\xiang\git\'
+Set-Location $xzGit
+Set-Theme Paradox
