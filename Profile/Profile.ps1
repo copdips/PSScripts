@@ -721,5 +721,6 @@ if (Test-LocalSession) {
     Import-Module posh-git
     Import-Module oh-my-posh
     $ThemeSettings.MyThemesLocation = 'D:\xiang\git\PSScripts\PoshThemes\'
+    $ThemeSettings.PromptSymbols.VirtualEnvSymbol = ''
     Set-Theme xiang-paradox
 }
