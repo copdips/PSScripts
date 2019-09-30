@@ -707,11 +707,19 @@ Set-Alias scs Select-zxColorString
 Set-Alias tw Trace-zxWord
 Set-Alias tp Test-zxPort
 
+Set-Alias vi vim
 Set-Alias py python
 Set-Alias ipy ipython
 Set-Alias venv Enable-Venv
 Set-Alias upip Update-Pip
 
-$xzGit = 'D:\xiang\git\'
-Set-Location $xzGit
-Set-Theme xiang-paradox
+
+if (Test-LocalSession) {
+    $xzGit = 'D:\xiang\git\'
+    Set-Location $xzGit
+
+    Import-Module posh-git
+    Import-Module oh-my-posh
+    $ThemeSettings.MyThemesLocation = 'D:\xiang\git\PSScripts\PoshThemes\'
+    Set-Theme xiang-paradox
+}
