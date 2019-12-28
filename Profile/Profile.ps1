@@ -583,7 +583,7 @@ function Get-zxPSVersion {
     if ($psVersionObject.Major -lt 6) {
         $psVersion = "$($psVersionObject.Major).$($psVersionObject.Minor)"
     } elseIf ($psVersionObject.Major -ge 6) {
-        $psVersion = "$($psVersionObject.Major).$($psVersionObject.Minor).$($psVersionObject.Patch)"
+        $psVersion = $psVersionObject.ToString()
     }
     return $psVersion
 }
