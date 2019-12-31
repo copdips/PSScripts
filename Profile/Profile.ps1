@@ -1,5 +1,8 @@
 Set-Variable -Name PSProfilePath -Value $PSCommandPath -Option Constant
 
+$PSDefaultParameterValues['Select-String:AllMatches'] = $true
+$PSDefaultParameterValues['Out-String:Stream'] = $true
+
 # https://github.com/PowerShell/Win32-OpenSSH/wiki/TTY-PTY-support-in-Windows-OpenSSH
 $env:TERM = 'xterm'
 
