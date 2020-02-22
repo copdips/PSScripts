@@ -719,7 +719,9 @@ Set-Alias upip Update-Pip
 
 if (Test-LocalSession) {
     $xzGit = 'D:\xiang\git\'
-    Set-Location $xzGit
+    if ($env:TERM_PROGRAM -ne 'vscode') {
+        Set-Location $xzGit
+    }
 
     Import-Module posh-git
     Import-Module oh-my-posh
