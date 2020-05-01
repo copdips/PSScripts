@@ -1,0 +1,263 @@
+// To view the default settings, hold "alt" while clicking on the "Settings" button.
+// For documentation on these settings, see: https://aka.ms/terminal-documentation
+{
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44b1}",
+    "theme": "system",
+    "copyOnSelect": true,
+    "profiles": {
+        "defaults": {
+            // Put settings here that you want to apply to all profiles
+            "colorScheme": "Solarized Dark - Patched",
+            "fontFace":  "Menlo for Powerline",
+            "fontSize":  10
+        },
+        "list": [
+            {
+                // Make changes here to the powershell.exe profile
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44b1}",
+                "name": "Windows Pwsh",
+                "commandline": "pwsh",
+                "hidden": false
+            },
+            {
+                // Make changes here to the powershell.exe profile
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "name": "Windows PowerShell",
+                "commandline": "powershell.exe",
+                "hidden": false
+            },
+            {
+                // Make changes here to the cmd.exe profile
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "name": "cmd",
+                "commandline": "cmd.exe",
+                "hidden": false
+            },
+            {
+                "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "colorScheme": "Ubuntu",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            }
+        ]
+    },
+    // Add any keybinding overrides to this array.
+    // To unbind a default keybinding, set the command to "unbound"
+    // https://github.com/microsoft/terminal/blob/master/doc/cascadia/SettingsSchema.md#keybindings
+
+    // default key bindings: https://github.com/microsoft/terminal/blob/master/src/cascadia/TerminalApp/defaults-universal.json
+    "keybindings": [
+        {
+            "command": "find",
+            "keys": [
+                "ctrl+f"
+            ]
+        },
+        {
+            "command": "closePane",
+            "keys": [
+                "alt+shift+x"
+            ]
+        },
+        {
+            "command": "splitHorizontal",
+            "keys": [
+                "alt+shift+down"
+            ]
+        },
+        {
+            "command": "splitVertical",
+            "keys": [
+                "alt+shift+right"
+            ]
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "down"
+            },
+            "keys": [
+                "alt+down"
+            ]
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "left"
+            },
+            "keys": [
+                "alt+left"
+            ]
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "right"
+            },
+            "keys": [
+                "alt+right"
+            ]
+        },
+        {
+            "command": {
+                "action": "moveFocus",
+                "direction": "up"
+            },
+            "keys": [
+                "alt+up"
+            ]
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "down"
+            },
+            "keys": [
+                "shift+down"
+            ]
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "left"
+            },
+            "keys": [
+                "shift+left"
+            ]
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "right"
+            },
+            "keys": [
+                "shift+right"
+            ]
+        },
+        {
+            "command": {
+                "action": "resizePane",
+                "direction": "up"
+            },
+            "keys": [
+                "shift+up"
+            ]
+        }
+    ],
+    // Add custom color schemes to this array
+    "schemes": [
+        {
+            "name": "Github",
+            "black": "#3e3e3e",
+            "red": "#970b16",
+            "green": "#07962a",
+            "yellow": "#f8eec7",
+            "blue": "#003e8a",
+            "purple": "#e94691",
+            "cyan": "#89d1ec",
+            "white": "#ffffff",
+            "brightBlack": "#666666",
+            "brightRed": "#de0000",
+            "brightGreen": "#87d5a2",
+            "brightYellow": "#f1d007",
+            "brightBlue": "#2e6cba",
+            "brightPurple": "#ffa29f",
+            "brightCyan": "#1cfafe",
+            "brightWhite": "#ffffff",
+            "background": "#f4f4f4",
+            "foreground": "#3e3e3e"
+        },
+        {
+            "name": "Solarized Darcula",
+            "black": "#25292a",
+            "red": "#f24840",
+            "green": "#629655",
+            "yellow": "#b68800",
+            "blue": "#2075c7",
+            "purple": "#797fd4",
+            "cyan": "#15968d",
+            "white": "#d2d8d9",
+            "brightBlack": "#25292a",
+            "brightRed": "#f24840",
+            "brightGreen": "#629655",
+            "brightYellow": "#b68800",
+            "brightBlue": "#2075c7",
+            "brightPurple": "#797fd4",
+            "brightCyan": "#15968d",
+            "brightWhite": "#d2d8d9",
+            "background": "#3d3f41",
+            "foreground": "#d2d8d9"
+        },
+        {
+            "name": "Solarized Dark - Patched",
+            "black": "#002831",
+            "red": "#d11c24",
+            "green": "#738a05",
+            "yellow": "#a57706",
+            "blue": "#2176c7",
+            "purple": "#c61c6f",
+            "cyan": "#259286",
+            "white": "#eae3cb",
+            "brightBlack": "#475b62",
+            "brightRed": "#bd3613",
+            "brightGreen": "#475b62",
+            "brightYellow": "#536870",
+            "brightBlue": "#708284",
+            "brightPurple": "#5956ba",
+            "brightCyan": "#819090",
+            "brightWhite": "#fcf4dc",
+            "background": "#001e27",
+            "foreground": "#708284"
+        },
+        {
+            "name": "Solarized Dark Higher Contrast",
+            "black": "#002831",
+            "red": "#d11c24",
+            "green": "#6cbe6c",
+            "yellow": "#a57706",
+            "blue": "#2176c7",
+            "purple": "#c61c6f",
+            "cyan": "#259286",
+            "white": "#eae3cb",
+            "brightBlack": "#006488",
+            "brightRed": "#f5163b",
+            "brightGreen": "#51ef84",
+            "brightYellow": "#b27e28",
+            "brightBlue": "#178ec8",
+            "brightPurple": "#e24d8e",
+            "brightCyan": "#00b39e",
+            "brightWhite": "#fcf4dc",
+            "background": "#001e27",
+            "foreground": "#9cc2c3"
+        },
+        {
+            "name": "Ubuntu",
+            "black": "#2e3436",
+            "red": "#cc0000",
+            "green": "#4e9a06",
+            "yellow": "#c4a000",
+            "blue": "#3465a4",
+            "purple": "#75507b",
+            "cyan": "#06989a",
+            "white": "#d3d7cf",
+            "brightBlack": "#555753",
+            "brightRed": "#ef2929",
+            "brightGreen": "#8ae234",
+            "brightYellow": "#fce94f",
+            "brightBlue": "#729fcf",
+            "brightPurple": "#ad7fa8",
+            "brightCyan": "#34e2e2",
+            "brightWhite": "#eeeeec",
+            "background": "#300a24",
+            "foreground": "#eeeeec"
+        }
+    ]
+}
